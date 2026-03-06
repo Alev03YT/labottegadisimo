@@ -1,0 +1,43 @@
+h2#imPgTitle {float: left; margin-left: 6px; margin-right: 6px; width: 858px;}
+#imCell_2 { display: block; position: relative; overflow: hidden; width: 430px; min-height: 75px; padding-top: 3px; padding-bottom: 3px; padding-left: 3px; padding-right: 3px;}
+#imCellStyle_2 { position: relative; width: 424px; min-height: 69px; padding: 3px 3px 3px 3px; text-align: center; border-top: 0; border-bottom: 0; border-left: 0; border-right: 0; z-index: 2;}
+#imCellStyleGraphics_2 { position: absolute; top: 3px; bottom: 3px; left: 3px; right: 3px; background-color: transparent; }
+#imTextObject_2_tab0 { position: relative; line-height: 1px; font-size: 1pt; font-style: normal; color: black; font-weight: normal; }
+#imTextObject_2_tab0 ul { list-style: disc; margin: 0px; padding: 0px; }
+#imTextObject_2_tab0 ul li { margin: 0px 0px 0px 15px; padding: 0px; font-size: 9pt; line-height: 19px;}
+#imTextObject_2_tab0 table { margin: 0 auto; padding: 0; border-collapse: collapse; border-spacing:0; line-height: inherit; }
+#imTextObject_2_tab0 table td { padding: 4px 3px 4px 3px; margin: 0px; line-height: 1px; font-size: 1pt; }
+#imTextObject_2_tab0 p { margin: 0; padding: 0; }
+#imTextObject_2_tab0 img { border: none; margin: 0px 0px; vertical-align: text-bottom;}
+#imTextObject_2_tab0 img.fleft { float: left; margin-right: 15px; vertical-align: baseline;}
+#imTextObject_2_tab0 img.fright { float: right; margin-left: 15px; vertical-align: baseline;}
+#imTextObject_2_tab0 .imUl { text-decoration: underline; }
+#imTextObject_2_tab0 .ff0 { font-family: "Tahoma", sans-serif; }
+#imTextObject_2_tab0 .ff1 { font-family: "Century Gothic", sans-serif; }
+#imTextObject_2_tab0 .ff2 { font-family: "Tahoma", sans-serif; }
+#imTextObject_2_tab0 .cf1 { color: #000000; }
+#imTextObject_2_tab0 .cf2 { color: #FFFFFF; }
+#imTextObject_2_tab0 .cf3 { color: #806000; }
+#imTextObject_2_tab0 .cf4 { color: #000000; }
+#imTextObject_2_tab0 .fs20 { vertical-align: baseline; font-size: 10pt; line-height: 20px; }
+#imTextObject_2_tab0 .fs24 { vertical-align: baseline; font-size: 12pt; line-height: 23px;}
+#imTextObject_2_tab0 .cb1 { background-color: #000000; }
+#imTextObject_2_tab0 .cb2 { background-color: transparent; }
+#imTextObject_2_tab0 .cb3 { background-color: #806000; }
+#imTextObject_2_tab0 .cb4 { background-color: #000000; }
+#imCell_1 { display: block; position: relative; overflow: hidden; width: 430px; min-height: 1057px; padding-top: 3px; padding-bottom: 3px; padding-left: 3px; padding-right: 3px;}
+#imCellStyle_1 { position: relative; width: 424px; min-height: 1051px; padding: 3px 3px 3px 3px; text-align: center; border-top: 0; border-bottom: 0; border-left: 0; border-right: 0; z-index: 2;}
+#imCellStyleGraphics_1 { position: absolute; top: 3px; bottom: 3px; left: 3px; right: 3px; background-color: transparent; }
+#imObjectForm_1 { position: relative; font-family: Tahoma, sans serif; font-size: 10pt; text-align: left; }
+#imObjectForm_1 label, #imObjectForm_1 .checkbox, #imObjectForm_1 .radiobutton { color: #000000; font-family: Tahoma, sans serif; font-size: 10pt; }
+#imObjectForm_1 label { text-align: left; padding-top: 2px; }
+#imObjectForm_1 fieldset { margin: 0; padding: 8px 0 0 0; }
+#imObjectForm_1 fieldset.first { margin: 0; padding: 0; }
+#imObjectForm_1 div.legend { margin-bottom: 8px; color: #000000; font-family: Tahoma, sans serif; font-size: 10pt; border-bottom: 1px solid #403000; }
+#imObjectForm_1 input[type=text], #imObjectForm_1 input[type=password], #imObjectForm_1 input[type=file], #imObjectForm_1 select, #imObjectForm_1 textarea { resize: none; margin: 2px 0 3px; color: #806000; border: 1px solid #403000; background-color: #FFFFFF; font-family: Tahoma, sans serif; font-size: 10pt; padding-left: 3px; padding-right: 3px; border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-left-radius: 5px; border-bottom-right-radius: 5px; }
+#imObjectForm_1 input[type="checkbox"], #imObjectForm_1 input[type="radio"] { border: 0; background-color: transparent; }
+#imObjectForm_1 input.imFormFocus, #imObjectForm_1 select.imFormFocus, #imObjectForm_1 textarea.imFormFocus { color: #000000; background-color: #FFFFE0; }
+#imObjectForm_1 input[type="checkbox"].imFormFocus, #imObjectForm_1 input[type="radio"].imFormFocus { border: 0; background-color: transparent; }
+#imObjectForm_1 input.imFormMark, #imObjectForm_1 textarea.imFormMark { border: 1px solid #FF0000; }
+#imObjectForm_1 input[type="submit"], #imObjectForm_1 input[type="reset"], #imObjectForm_1 input[type="button"], #imObjectForm_1_next, #imObjectForm_1_prev, #imObjectForm_1_submit, #imObjectForm_1_reset {cursor: pointer;color: #806000; border: 1px solid #403000; background: #FFFFFF url('../images/btn_13.png') no-repeat center top;;font-family: Century Gothic, sans serif;font-size: 12pt;font-weight: normal;font-style: normal; border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-left-radius: 5px; border-bottom-right-radius: 5px;height: 44px; min-width: 164px;padding: 0; }
+#imObjectForm_1_prot { display: none; }

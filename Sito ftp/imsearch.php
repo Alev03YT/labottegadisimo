@@ -1,0 +1,91 @@
+<?php require_once("res/x5engine.php"); ?>
+<!DOCTYPE html><!-- HTML5 -->
+<html lang="it" dir="ltr">
+	<head>
+		<title>Cerca - La Bottega di Simo</title>
+		<meta charset="utf-8" />
+		<!--[if IE]><meta http-equiv="ImageToolbar" content="False" /><![endif]-->
+		<meta name="author" content="SBService Design" />
+		<meta name="generator" content="Incomedia WebSite X5 Professional 10.1.0.39 - www.websitex5.com" />
+		<meta name="viewport" content="width=974" />
+		<link rel="icon" href="favicon.png" type="image/png" />
+		<link rel="stylesheet" type="text/css" href="style/reset.css" media="screen,print" />
+		<link rel="stylesheet" type="text/css" href="style/print.css" media="print" />
+		<link rel="stylesheet" type="text/css" href="style/style.css" media="screen,print" />
+		<link rel="stylesheet" type="text/css" href="style/template.css" media="screen" />
+		<link rel="stylesheet" type="text/css" href="style/menu.css" media="screen" />
+		<!--[if lte IE 7]><link rel="stylesheet" type="text/css" href="style/ie.css" media="screen" /><![endif]-->
+		
+		<script type="text/javascript" src="res/jquery.js?39"></script>
+		<script type="text/javascript" src="res/x5engine.js?39"></script>
+		<script type="text/javascript">
+			x5engine.boot.push(function () { x5engine.utils.imCodeProtection('SBService Design'); });
+		</script>
+		<meta name="title" content="la bottega di simo">
+		<meta name="description" content="creazioni handmade a uncinetto ferri e ricamo">
+		<meta name="keywords" content="creazioni,borse,accessori,amigurumi,gioielli,handmade, fatto a mano, ricamo, centrini,coperte, abbigliamento">
+		<meta name="robots" content="index, follow">
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="revisit-after" content="1 day">
+		<meta name="author" content="SBService Design">
+		<script type="text/javascript">x5engine.boot.push('x5engine.imSearch.Load()')</script>
+	</head>
+	<body>
+		<div id="imHeaderBg"></div>
+		<div id="imFooterBg"></div>
+		<div id="imPage">
+			<div id="imHeader">
+				<h1 class="imHidden">Cerca - La Bottega di Simo</h1>
+				
+				<div onclick="x5engine.utils.location('cart/index.html'); return false;" style="position: absolute; top: 196px; left: 622px; width: 168px; height: 92px; cursor: pointer;"></div>
+			</div>
+			<a class="imHidden" href="#imGoToCont" title="Salta il menu di navigazione">Vai ai contenuti</a>
+			<a id="imGoToMenu"></a><p class="imHidden">Menu principale:</p>
+			<div id="imMnMn" class="auto">
+				<ul class="auto">
+					<li id="imMnMnNode0">
+						<a href="index.html">
+							<span class="imMnMnFirstBg">
+								<span class="imMnMnTxt"><span class="imMnMnImg"></span>Home Page</span>
+							</span>
+						</a>
+					</li><li id="imMnMnNode3">
+						<a href="chi-sono.html">
+							<span class="imMnMnFirstBg">
+								<span class="imMnMnTxt"><span class="imMnMnImg"></span>Chi Sono</span>
+							</span>
+						</a>
+					</li><li id="imMnMnNode5">
+						<a href="shopping.html">
+							<span class="imMnMnFirstBg">
+								<span class="imMnMnTxt"><span class="imMnMnImg"></span>Shopping</span>
+							</span>
+						</a>
+					</li><li id="imMnMnNode15">
+						<a href="contatti.html">
+							<span class="imMnMnFirstBg">
+								<span class="imMnMnTxt"><span class="imMnMnImg"></span>Contatti</span>
+							</span>
+						</a>
+					</li>
+				</ul>
+			</div>
+			<div id="imContentGraphics"></div>
+			<div id="imContent">
+				<a id="imGoToCont"></a>
+				<h2 id="imPgTitle">Risultati della ricerca</h2><?php
+$search = new imSearch();
+$search->search(@$_GET['search'], @$_GET['page']);
+?>				  
+				<div class="imClear"></div>
+			</div>
+			<div id="imFooter">
+				
+				<div onclick=" return x5engine.utils.imPopUpWin('http://sbservicedesign.ilbello.com/', '', -1, -1, true);" style="position: absolute; top: 68px; left: 71px; width: 443px; height: 19px; cursor: pointer;"></div>
+			</div>
+		</div>
+		<span class="imHidden"><a href="#imGoToCont" title="Rileggi i contenuti della pagina">Torna ai contenuti</a> | <a href="#imGoToMenu" title="Naviga ancora nella pagina">Torna al menu</a></span>
+		<script type="text/javascript" src="cart/x5cart.js?39_638959485622385086"></script>
+
+	</body>
+</html>
