@@ -133,3 +133,29 @@ body {margin: 0; padding: 0; text-align: left;}
     background-position: center top !important;
   }
 }
+/* ===== MIGLIORIA MOBILE CONTENUTO ===== */
+
+@media screen and (max-width: 768px) {
+
+  #imContentGraphics {
+    position: relative !important;
+    top: 0 !important;
+    bottom: auto !important;
+    width: 100% !important;
+  }
+
+  #imContent {
+    width: 100% !important;
+    padding: 15px !important;
+  }
+
+  #imFooter {
+    width: 100% !important;
+  }
+
+  #imHeaderBg,
+  #imFooterBg {
+    width: 100% !important;
+  }
+
+}
