@@ -10,83 +10,126 @@ body {margin: 0; padding: 0; text-align: left;}
 #imContentGraphics {min-height: 380px; position: absolute; top: 310px; bottom: 177px; left: 0; width: 974px; background-color: transparent; background-image: url('content.png'); background-position: left top; background-repeat: repeat-y;}
 #imFooterBg {position: absolute; left: 0; bottom: 0; height: 90px; width: 100%; background-color: transparent;}
 #imFooter {position: relative; margin: 0 auto; height: 177px; width: 974px; background-color: transparent; background-image: url('bottom.png'); background-position: top left; background-repeat: no-repeat;}
-/* Responsive mobile fix */
-
-img {
-  max-width: 100%;
-  height: auto;
-}
-
-html, body {
-  overflow-x: hidden;
-}
+/* ===== MOBILE FIX PULITO ===== */
 
 @media screen and (max-width: 768px) {
 
-#imPage {
-  width: 100% !important;
-  max-width: 974px;
-}
-
-#imHeader,
-#imContent,
-#imFooter {
-  width: 100% !important;
-}
-
-#imContent {
-  padding: 15px;
-}
-
-}
-/* ===== MOBILE FIX DEFINITIVO ===== */
-
-html, body {
-    width: 100%;
+  html, body {
+    width: 100% !important;
     overflow-x: hidden !important;
-}
+  }
 
-img {
+  img, iframe, object, embed, table {
     max-width: 100% !important;
     height: auto !important;
-}
+  }
 
-@media screen and (max-width: 768px) {
+  #imPage {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 auto !important;
+  }
 
-    #imPage {
-        width: 100% !important;
-        max-width: 100% !important;
-        min-width: 0 !important;
-        margin: 0 auto !important;
-    }
+  #imHeaderBg,
+  #imFooterBg,
+  #imContentGraphics,
+  #imHeader,
+  #imContent,
+  #imFooter {
+    width: 100% !important;
+    min-width: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
 
-    #imHeader,
-    #imContent,
-    #imFooter {
-        width: 100% !important;
-        min-width: 0 !important;
-    }
+  #imHeader {
+    background-size: cover !important;
+    background-position: center top !important;
+  }
 
-    #imContent {
-        padding: 12px !important;
-        box-sizing: border-box !important;
-    }
+  #imContentGraphics {
+    width: 100% !important;
+    background-size: 100% auto !important;
+  }
 
-    #imMnMn {
-        width: 100% !important;
-        height: auto !important;
-    }
+  #imContent {
+    width: 100% !important;
+    padding: 12px !important;
+    box-sizing: border-box !important;
+  }
 
-    #imMnMn ul,
-    #imMnMn li {
-        width: 100% !important;
-        float: none !important;
-        display: block !important;
-    }
+  #imMnMn {
+    position: relative !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    padding: 8px 12px !important;
+    box-sizing: border-box !important;
+    background-size: 100% auto !important;
+  }
 
-    #imMnMn a {
-        display: block !important;
-        width: 100% !important;
-    }
+  #imMnMn > ul {
+    width: 100% !important;
+    display: block !important;
+  }
 
+  #imMnMn li {
+    display: block !important;
+    width: 100% !important;
+    float: none !important;
+    margin: 0 0 6px 0 !important;
+  }
+
+  #imMnMn a {
+    display: block !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  div[style*="float: left"] {
+    float: none !important;
+  }
+
+  div[style*="width: 872px"],
+  div[style*="width: 871px"],
+  div[style*="width: 874px"],
+  div[style*="width: 873px"],
+  div[style*="width: 868px"],
+  div[style*="width: 865px"],
+  div[style*="width: 786px"],
+  div[style*="width: 713px"],
+  div[style*="width: 697px"],
+  div[style*="width: 634px"],
+  div[style*="width: 630px"],
+  div[style*="width: 620px"],
+  div[style*="width: 612px"],
+  div[style*="width: 436px"],
+  div[style*="width: 349px"],
+  div[style*="width: 348px"],
+  div[style*="width: 239px"],
+  div[style*="width: 237px"],
+  div[style*="width: 218px"],
+  div[style*="width: 174px"],
+  div[style*="width: 168px"],
+  div[style*="width: 162px"],
+  div[style*="width: 158px"],
+  div[style*="width: 156px"],
+  div[style*="width: 124px"],
+  div[style*="width: 89px"],
+  div[style*="width: 87px"],
+  div[style*="width: 79px"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  #imFooter {
+    background-size: cover !important;
+    background-position: center top !important;
+  }
 }
