@@ -38,22 +38,27 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo + Accedi */}
-          <div className="flex items-center gap-3 flex-shrink-0">
-            <Link to="/Home" className="flex items-center gap-2">
-              <img src="https://media.db.com/images/public/69b448a22c54a90583bd1ad4/c685ee6b7_logo-mini.png" alt="La Bottega di Simo" className="h-10 w-auto" />
-              <span className="font-heading text-sm font-semibold text-foreground tracking-tight">La Bottega di Simo</span>
-            </Link>
-            {isAuth === false && (
-              <Button
-                variant="outline"
-                size="sm"
-                className="rounded-full text-xs"
-                onClick={() => db.auth.redirectToLogin(window.location.href)}
-              >
-                <LogIn className="w-3.5 h-3.5 mr-1" /> Registrati / Accedi
-              </Button>
-            )}
-          </div>
+<div className="flex items-center gap-3 flex-shrink-0">
+  <Link to="/Home" className="flex items-center gap-2">
+    <img src="https://media.db.com/images/public/69b448a22c54a90583bd1ad4/c685ee6b7_logo-mini.png" alt="La Bottega di Simo" className="h-10 w-auto" />
+    <span className="font-heading text-sm font-semibold text-foreground tracking-tight">La Bottega di Simo</span>
+  </Link>
+
+  <div className="hidden lg:block text-xs text-muted-foreground max-w-xs leading-tight">
+    Accedi o registrati per acquistare e tenere traccia dei tuoi ordini
+  </div>
+
+  {isAuth === false && (
+    <Button
+      variant="outline"
+      size="sm"
+      className="rounded-full text-xs"
+      onClick={() => db.auth.redirectToLogin(window.location.href)}
+    >
+      <LogIn className="w-3.5 h-3.5 mr-1" /> Registrati / Accedi
+    </Button>
+  )}
+</div>
 
           {/* Cart + Hamburger */}
           <div className="flex items-center gap-2 flex-shrink-0">
