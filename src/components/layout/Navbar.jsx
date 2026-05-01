@@ -35,6 +35,24 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
 
   return (
     <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/50">
+      <div className="bg-secondary/60 border-b border-border/50">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex items-center justify-between gap-3">
+    <p className="text-xs sm:text-sm text-muted-foreground">
+      Accedi o registrati per acquistare e tenere traccia dei tuoi ordini
+    </p>
+
+    {isAuth === false && (
+      <Button
+        variant="default"
+        size="sm"
+        className="rounded-full text-xs whitespace-nowrap"
+        onClick={() => db.auth.redirectToLogin(window.location.href)}
+      >
+        <LogIn className="w-3.5 h-3.5 mr-1" /> Registrati / Accedi
+      </Button>
+    )}
+  </div>
+</div>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo + Accedi */}
