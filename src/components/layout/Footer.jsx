@@ -37,11 +37,11 @@ export default function Footer() {
                 <MessageCircle className="w-4 h-4" />
                 <span>347-7922931 (WhatsApp)</span>
               </a>
-              <a href="https://www.instagram.com/labottegadisimo" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-foreground transition-colors">
+              <a href="https://www.instagram.com/labottega_di_simo?igsh=MWxuOXpwa3IyODRjZA==" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-foreground transition-colors">
                 <Instagram className="w-4 h-4" />
                 <span>@labottegadisimo</span>
               </a>
-              <a href="https://www.facebook.com/labottegadisimo" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-foreground transition-colors">
+              <a href="https://www.facebook.com/share/1CapNbtNTY/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-foreground transition-colors">
                 <Facebook className="w-4 h-4" />
                 <span>La Bottega di Simo</span>
               </a>
