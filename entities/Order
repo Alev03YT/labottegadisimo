@@ -1,0 +1,88 @@
+{
+  "name": "Order",
+  "type": "object",
+  "properties": {
+    "items": {
+      "type": "array",
+      "description": "Prodotti ordinati",
+      "items": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "string"
+          },
+          "product_name": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number"
+          },
+          "quantity": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "total": {
+      "type": "number",
+      "description": "Totale ordine"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "in_attesa",
+        "confermato",
+        "in_lavorazione",
+        "spedito",
+        "consegnato"
+      ],
+      "default": "in_attesa",
+      "description": "Stato dell'ordine"
+    },
+    "payment_method": {
+      "type": "string",
+      "enum": [
+        "paypal",
+        "carta",
+        "bonifico",
+        "klarna",
+        "scalapay"
+      ],
+      "description": "Metodo di pagamento scelto"
+    },
+    "payment_status": {
+      "type": "string",
+      "enum": [
+        "in_attesa",
+        "ricevuto",
+        "fallito"
+      ],
+      "default": "in_attesa",
+      "description": "Stato del pagamento"
+    },
+    "customer_name": {
+      "type": "string",
+      "description": "Nome del cliente"
+    },
+    "customer_email": {
+      "type": "string",
+      "description": "Email del cliente"
+    },
+    "shipping_address": {
+      "type": "string",
+      "description": "Indirizzo di spedizione"
+    },
+    "tracking_number": {
+      "type": "string",
+      "description": "Numero di tracking spedizione"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Note aggiuntive"
+    }
+  },
+  "required": [
+    "items",
+    "total"
+  ]
+}

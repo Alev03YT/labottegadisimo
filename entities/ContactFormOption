@@ -1,0 +1,30 @@
+{
+  "name": "ContactFormOption",
+  "type": "object",
+  "properties": {
+    "type": {
+      "type": "string",
+      "enum": [
+        "colore_materiale",
+        "taglia",
+        "elemento",
+        "colore_pelle",
+        "colore_minuteria"
+      ],
+      "description": "Tipo di opzione"
+    },
+    "value": {
+      "type": "string",
+      "description": "Valore dell'opzione"
+    },
+    "active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Attivo"
+    }
+  },
+  "required": [
+    "type",
+    "value"
+  ]
+}

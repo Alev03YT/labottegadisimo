@@ -1,0 +1,43 @@
+{
+  "name": "ShopSettings",
+  "type": "object",
+  "properties": {
+    "corriere_espresso_cost": {
+      "type": "number",
+      "description": "Costo spedizione Corriere Espresso (\u20ac)"
+    },
+    "poste_italiane_cost": {
+      "type": "number",
+      "description": "Costo spedizione Poste Italiane (\u20ac)"
+    },
+    "fermo_deposito_cost": {
+      "type": "number",
+      "description": "Costo Fermo Deposito Corriere (\u20ac)"
+    },
+    "paypal_email": {
+      "type": "string",
+      "description": "Email PayPal per i pagamenti"
+    },
+    "iban": {
+      "type": "string",
+      "description": "IBAN per bonifico bancario"
+    },
+    "iban_intestatario": {
+      "type": "string",
+      "description": "Intestatario del conto"
+    },
+    "carta_info": {
+      "type": "string",
+      "description": "Istruzioni pagamento carta"
+    },
+    "klarna_info": {
+      "type": "string",
+      "description": "Istruzioni Klarna"
+    },
+    "scalapay_info": {
+      "type": "string",
+      "description": "Istruzioni Scalapay"
+    }
+  },
+  "required": []
+}

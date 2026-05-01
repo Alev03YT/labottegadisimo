@@ -1,0 +1,26 @@
+{
+  "name": "ColorSwatch",
+  "type": "object",
+  "properties": {
+    "type": {
+      "type": "string",
+      "enum": [
+        "filato",
+        "pelle"
+      ],
+      "description": "Tipo: colore filato o colore pelle"
+    },
+    "name": {
+      "type": "string",
+      "description": "Nome del colore"
+    },
+    "image_url": {
+      "type": "string",
+      "description": "Foto del colore"
+    }
+  },
+  "required": [
+    "type",
+    "name"
+  ]
+}
