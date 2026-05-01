@@ -65,17 +65,6 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
   <div className="hidden lg:block text-xs text-muted-foreground max-w-xs leading-tight">
     Accedi o registrati per acquistare e tenere traccia dei tuoi ordini
   </div>
-
-  {isAuth === false && (
-    <Button
-      variant="outline"
-      size="sm"
-      className="rounded-full text-xs"
-      onClick={() => db.auth.redirectToLogin(window.location.href)}
-    >
-      <LogIn className="w-3.5 h-3.5 mr-1" /> Registrati / Accedi
-    </Button>
-  )}
 </div>
 
           {/* Cart + Hamburger */}
