@@ -1,71 +1,62 @@
 import React, { useState } from 'react';
+import { db, storage } from '@/lib/firebase';
+import { collection, addDoc } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 export default function Admin() {
-  const [products, setProducts] = useState([]);
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
-  const [image, setImage] = useState('');
+  const [file, setFile] = useState(null);
 
-  const handleImage = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+  const addProduct = async () => {
+    if (!name || !price || !file) return;
 
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setImage(reader.result);
-    };
-    reader.readAsDataURL(file);
-  };
+    try {
+      const storageRef = ref(storage, `products/${Date.now()}_${file.name}`);
+      await uploadBytes(storageRef, file);
+      const imageUrl = await getDownloadURL(storageRef);
 
-  const addProduct = () => {
-    if (!name || !price || !image) return;
+      await addDoc(collection(db, "products"), {
+        name,
+        price,
+        image: imageUrl,
+        createdAt: new Date()
+      });
 
-    setProducts([...products, { name, price, image }]);
+      alert("Prodotto aggiunto!");
+      setName('');
+      setPrice('');
+      setFile(null);
 
-    setName('');
-    setPrice('');
-    setImage('');
+    } catch (err) {
+      console.error(err);
+      alert("Errore!");
+    }
   };
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
+    <div className="p-6 max-w-3xl mx-auto">
+      <h1 className="text-xl font-bold mb-4">Admin</h1>
 
-      <h1 className="text-2xl font-bold mb-6">Pannello Admin</h1>
+      <input
+        placeholder="Nome"
+        value={name}
+        onChange={e => setName(e.target.value)}
+        className="border p-2 w-full mb-2"
+      />
 
-      <div className="bg-white p-4 rounded shadow mb-6">
-        <h2 className="font-semibold mb-3">Aggiungi prodotto</h2>
+      <input
+        placeholder="Prezzo"
+        value={price}
+        onChange={e => setPrice(e.target.value)}
+        className="border p-2 w-full mb-2"
+      />
 
-        <input
-          placeholder="Nome prodotto"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="border p-2 w-full mb-2"
-        />
+      <input type="file" onChange={e => setFile(e.target.files[0])} />
 
-        <input
-          placeholder="Prezzo"
-          value={price}
-          onChange={(e) => setPrice(e.target.value)}
-          className="border p-2 w-full mb-2"
-        />
-
-        <input type="file" onChange={handleImage} className="mb-2" />
-
-        <button onClick={addProduct} className="bg-black text-white px-4 py-2">
-          Aggiungi
-        </button>
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
-        {products.map((p, i) => (
-          <div key={i} className="border p-2">
-            <img src={p.image} className="w-full h-40 object-cover" />
-            <h3>{p.name}</h3>
-            <p>{p.price}€</p>
-          </div>
-        ))}
-      </div>
-
+      <button onClick={addProduct} className="bg-black text-white px-4 py-2 mt-3">
+        Aggiungi prodotto
+      </button>
     </div>
   );
 }
