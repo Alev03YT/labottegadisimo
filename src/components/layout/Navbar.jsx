@@ -37,15 +37,15 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
 
       {/* BARRA LOGIN SOPRA */}
       <div className="w-full bg-secondary/60 border-b border-border/50">
-        <div className="max-w-7xl mx-auto px-4 py-2 flex justify-between items-center">
-          <span className="text-xs text-muted-foreground">
-            Accedi o registrati per acquistare e tenere traccia dei tuoi ordini
-          </span>
+  <div className="max-w-7xl mx-auto px-3 py-1.5 flex justify-between items-center gap-2">
+    <span className="text-[11px] sm:text-xs text-muted-foreground leading-tight">
+      Accedi o registrati per acquistare e tracciare i tuoi ordini
+    </span>
 
           {isAuth === false && (
             <Button
               size="sm"
-              className="rounded-full text-xs"
+              className="rounded-full text-[11px] px-2 py-1 h-7 whitespace-nowrap"
               onClick={() => db.auth.redirectToLogin(window.location.href)}
             >
               <LogIn className="w-3 h-3 mr-1" /> Registrati / Accedi
