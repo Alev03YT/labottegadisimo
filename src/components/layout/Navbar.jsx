@@ -1,4 +1,4 @@
-const db = globalThis.__B44_DB__ || { auth:{ isAuthenticated: async()=>false, me: async()=>null }, entities:new Proxy({}, { get:()=>({ filter:async()=>[], get:async()=>null, create:async()=>({}), update:async()=>({}), delete:async()=>({}) }) }), integrations:{ Core:{ UploadFile:async()=>({ file_url:'' }) } } };
+const db = globalThis.__B44_DB__ || { auth:{ isAuthenticated: async()=>false, me: async()=>null, redirectToLogin:()=>{} } };
 
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
@@ -17,7 +17,6 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
       .catch(() => setIsAuth(false));
   }, []);
 
-  // Close menu on route change
   useEffect(() => {
     setMenuOpen(false);
   }, [location.pathname]);
@@ -34,75 +33,63 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
   const navLinks = allNavLinks.filter(l => !l.adminOnly || (isAdmin === true));
 
   return (
-    <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/50">
-      <div className="bg-secondary/60 border-b border-border/50">
-  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex items-center justify-between gap-3">
-    <p className="text-xs sm:text-sm text-muted-foreground">
-      Accedi o registrati per acquistare e tenere traccia dei tuoi ordini
-    </p>
+    <header className="sticky top-0 z-50">
 
-    {isAuth === false && (
-      <Button
-        variant="default"
-        size="sm"
-        className="rounded-full text-xs whitespace-nowrap"
-        onClick={() => db.auth.redirectToLogin(window.location.href)}
-      >
-        <LogIn className="w-3.5 h-3.5 mr-1" /> Registrati / Accedi
-      </Button>
-    )}
-  </div>
-</div>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo + Accedi */}
-<div className="flex items-center gap-3 flex-shrink-0">
-  <Link to="/Home" className="flex items-center gap-2">
-    <img src="https://media.db.com/images/public/69b448a22c54a90583bd1ad4/c685ee6b7_logo-mini.png" alt="La Bottega di Simo" className="h-10 w-auto" />
-    <span className="font-heading text-sm font-semibold text-foreground tracking-tight">La Bottega di Simo</span>
-  </Link>
+      {/* BARRA LOGIN SOPRA */}
+      <div className="w-full bg-secondary/60 border-b border-border/50">
+        <div className="max-w-7xl mx-auto px-4 py-2 flex justify-between items-center">
+          <span className="text-xs text-muted-foreground">
+            Accedi o registrati per acquistare e tenere traccia dei tuoi ordini
+          </span>
 
-  <div className="hidden lg:block text-xs text-muted-foreground max-w-xs leading-tight">
-    Accedi o registrati per acquistare e tenere traccia dei tuoi ordini
-  </div>
-</div>
+          {isAuth === false && (
+            <Button
+              size="sm"
+              className="rounded-full text-xs"
+              onClick={() => db.auth.redirectToLogin(window.location.href)}
+            >
+              <LogIn className="w-3 h-3 mr-1" /> Registrati / Accedi
+            </Button>
+          )}
+        </div>
+      </div>
 
-          {/* Cart + Hamburger */}
-          <div className="flex items-center gap-2 flex-shrink-0">
-            <button onClick={onCartClick} className="relative p-2 hover:bg-secondary rounded-full transition-colors">
-              <ShoppingBag className="w-5 h-5 text-foreground" />
+      {/* NAVBAR */}
+      <div className="bg-background/80 backdrop-blur-md border-b border-border/50">
+        <div className="max-w-7xl mx-auto px-4 h-16 flex justify-between items-center">
+
+          <Link to="/Home" className="flex items-center gap-2">
+            <img src="https://media.db.com/images/public/69b448a22c54a90583bd1ad4/c685ee6b7_logo-mini.png" className="h-10" />
+            <span className="font-semibold text-sm">La Bottega di Simo</span>
+          </Link>
+
+          <div className="flex items-center gap-2">
+            <button onClick={onCartClick} className="relative p-2">
+              <ShoppingBag className="w-5 h-5" />
               {cartCount > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 w-5 h-5 bg-primary text-primary-foreground text-[10px] font-bold rounded-full flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 bg-black text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                   {cartCount}
                 </span>
               )}
             </button>
-            <button
-              onClick={() => setMenuOpen(o => !o)}
-              className="p-2 hover:bg-secondary rounded-full transition-colors"
-            >
-              {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+
+            <button onClick={() => setMenuOpen(!menuOpen)}>
+              {menuOpen ? <X /> : <Menu />}
             </button>
           </div>
         </div>
       </div>
 
-      {/* Dropdown menu */}
       {menuOpen && (
-        <div className="bg-background/95 backdrop-blur-md border-b border-border/50 shadow-md">
-          <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col gap-1">
-            {navLinks.map((link) => (
-              <Link
-                key={link.path}
-                to={link.path}
-                className="px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
+        <div className="bg-white border-b">
+          {navLinks.map(link => (
+            <Link key={link.path} to={link.path} className="block p-3">
+              {link.label}
+            </Link>
+          ))}
         </div>
       )}
+
     </header>
   );
 }
