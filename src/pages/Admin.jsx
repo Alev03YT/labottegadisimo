@@ -351,15 +351,20 @@ export default function Admin() {
 
           {activeTab === "colors" && (
             <section className="bg-white rounded-2xl shadow p-5">
-              <h2 className="text-xl font-bold mb-4">Colori filato e pelle</h2>
+              <h2 className="text-xl font-bold mb-4">Colori filato, pelle e minuteria</h2>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
                 <input className="border p-2 rounded" placeholder="Nome colore" value={colorForm.name} onChange={(e) => setColorForm({ ...colorForm, name: e.target.value })} />
 
-                <select className="border p-2 rounded" value={colorForm.type} onChange={(e) => setColorForm({ ...colorForm, type: e.target.value })}>
-                  <option value="filato">Filato</option>
-                  <option value="pelle">Pelle</option>
-                </select>
+                <select
+  className="border p-2 rounded"
+  value={colorForm.type}
+  onChange={(e) => setColorForm({ ...colorForm, type: e.target.value })}
+>
+  <option value="filato">Colori filato</option>
+  <option value="pelle">Pelle</option>
+  <option value="minuteria">Minuteria</option>
+</select>
 
                 <input type="file" accept="image/*" onChange={(e) => setColorImage(e.target.files[0])} />
               </div>
