@@ -7,7 +7,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search, Plus, Pencil, MessageSquare, ShoppingBag } from 'lucide-react';
+import { Search, Plus, Pencil, MessageSquare, ShoppingBag, Heart } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CATEGORIES_FILTER, CATEGORY_LABELS } from '@/components/categories';
 import ProductFormDialog from '@/components/products/ProductFormDialog';
@@ -28,10 +28,41 @@ export default function Catalog() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
+  const [favorites, setFavorites] = useState(() => {
+  try {
+    return JSON.parse(localStorage.getItem("favorites") || "[]");
+  } catch {
+    return [];
+  }
+});
 
   useEffect(() => {
     db.auth.me().then(u => setIsAdmin(u?.role === 'admin')).catch(() => {});
   }, []);
+  useEffect(() => {
+  localStorage.setItem("favorites", JSON.stringify(favorites));
+}, [favorites]);
+
+const toggleFavorite = (product) => {
+  setFavorites((prev) => {
+    const exists = prev.some((p) => p.id === product.id);
+
+    if (exists) {
+      return prev.filter((p) => p.id !== product.id);
+    }
+
+    return [
+      ...prev,
+      {
+        id: product.id,
+        name: product.name,
+        image_url: product.image_url,
+        category: product.category,
+        price: product.price,
+      },
+    ];
+  });
+};
 
   const { data: products = [], isLoading } = useQuery({
     queryKey: ['products'],
@@ -137,62 +168,106 @@ export default function Catalog() {
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
           <AnimatePresence>
-            {filtered.map((product) => (
-              <motion.div
-                key={product.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="group relative"
-              >
-                <Link to={`/ProductDetail?id=${product.id}`} className="block">
-                  <div className="relative aspect-square rounded-2xl overflow-hidden bg-secondary mb-3">
-                    {product.image_url ? (
-                      <img
-                        src={product.image_url}
-                        alt={product.name}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <ShoppingBag className="w-12 h-12 opacity-30 text-muted-foreground" />
-                      </div>
-                    )}
-                    {product.featured && (
-                      <span className="absolute top-3 left-3 bg-primary text-primary-foreground px-3 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider">
-                        In Evidenza
-                      </span>
-                    )}
-                    {isAdmin && (
-                      <button
-                        onClick={(e) => { e.preventDefault(); setEditingProduct(product); setFormOpen(true); }}
-                        className="absolute top-2 right-2 bg-white/90 hover:bg-white rounded-full p-1.5 shadow opacity-0 group-hover:opacity-100 transition-opacity"
-                      >
-                        <Pencil className="w-3.5 h-3.5 text-foreground" />
-                      </button>
-                    )}
-                  </div>
-                  <span className="text-[10px] font-medium uppercase tracking-widest text-primary">
-                    {CATEGORY_LABELS[product.category] || product.category}
-                  </span>
-                  <h3 className="font-heading text-sm font-medium text-foreground mt-0.5 leading-snug line-clamp-2 group-hover:text-primary transition-colors">
-                    {product.name}
-                  </h3>
-                  {product.size && <p className="text-xs text-muted-foreground mt-0.5">Taglia: {product.size}</p>}
-                  {product.bag_size && <p className="text-xs text-muted-foreground mt-0.5">Misura: {product.bag_size}</p>}
-                </Link>
+  {filtered.map((product) => {
+    const isAvailable = product.available === true || product.available === "true";
+    const isFavorite = favorites.some((p) => p.id === product.id);
 
-                {/* Richiedi preventivo con nome articolo pre-compilato */}
-                <div className="mt-2">
-                  <Link to={`/Contacts?product=${encodeURIComponent(product.name)}`}>
-                    <Button size="sm" variant="outline" className="w-full rounded-full text-xs border-primary/30 hover:bg-primary hover:text-primary-foreground">
-                      <MessageSquare className="w-3 h-3 mr-1" />
-                      Richiedi Preventivo
-                    </Button>
-                  </Link>
-                </div>
-              </motion.div>
-            ))}
-          </AnimatePresence>
+    return (
+      <motion.div
+        key={product.id}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="group relative"
+      >
+        <Link to={`/ProductDetail?id=${product.id}`} className="block">
+          <div className="relative aspect-square rounded-2xl overflow-hidden bg-secondary mb-3">
+            {product.image_url ? (
+              <img
+                src={product.image_url}
+                alt={product.name}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center">
+                <ShoppingBag className="w-12 h-12 opacity-30 text-muted-foreground" />
+              </div>
+            )}
+
+            {product.featured && (
+              <span className="absolute top-3 left-3 bg-primary text-primary-foreground px-3 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider">
+                In Evidenza
+              </span>
+            )}
+
+            {!isAvailable && (
+              <span className="absolute bottom-3 left-3 bg-white/90 text-foreground px-3 py-1 rounded-full text-[10px] font-semibold">
+                Non disponibile
+              </span>
+            )}
+
+            {isAdmin && (
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  setEditingProduct(product);
+                  setFormOpen(true);
+                }}
+                className="absolute top-2 right-2 bg-white/90 hover:bg-white rounded-full p-1.5 shadow opacity-0 group-hover:opacity-100 transition-opacity"
+              >
+                <Pencil className="w-3.5 h-3.5 text-foreground" />
+              </button>
+            )}
+          </div>
+
+          <span className="text-[10px] font-medium uppercase tracking-widest text-primary">
+            {CATEGORY_LABELS[product.category] || product.category}
+          </span>
+
+          <h3 className="font-heading text-sm font-medium text-foreground mt-0.5 leading-snug line-clamp-2 group-hover:text-primary transition-colors">
+            {product.name}
+          </h3>
+
+          {product.size && (
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Taglia: {product.size}
+            </p>
+          )}
+
+          {product.bag_size && (
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Misura: {product.bag_size}
+            </p>
+          )}
+        </Link>
+
+        <div className="mt-2 space-y-2">
+          {!isAvailable && (
+            <Button
+              size="sm"
+              variant={isFavorite ? "default" : "outline"}
+              className="w-full rounded-full text-xs"
+              onClick={() => toggleFavorite(product)}
+            >
+              <Heart className={`w-3 h-3 mr-1 ${isFavorite ? "fill-current" : ""}`} />
+              {isFavorite ? "Nei preferiti" : "Aggiungi ai preferiti"}
+            </Button>
+          )}
+
+          <Link to={`/Contacts?product=${encodeURIComponent(product.name)}`}>
+            <Button
+              size="sm"
+              variant="outline"
+              className="w-full rounded-full text-xs border-primary/30 hover:bg-primary hover:text-primary-foreground"
+            >
+              <MessageSquare className="w-3 h-3 mr-1" />
+              Richiedi Preventivo
+            </Button>
+          </Link>
+        </div>
+      </motion.div>
+    );
+  })}
+</AnimatePresence>
         </div>
       )}
       <ProductFormDialog open={formOpen} onOpenChange={setFormOpen} editingProduct={editingProduct} />
