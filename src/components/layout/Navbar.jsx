@@ -42,15 +42,13 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
       Accedi o registrati per acquistare e tenere traccia dei tuoi ordini
     </p>
 
-    {isAuth === false && (
-      <Button
-        size="sm"
-        className="rounded-full bg-primary hover:bg-primary/90"
-        onClick={() => db.auth.redirectToLogin(window.location.href)}
-      >
-        <LogIn className="w-4 h-4 mr-1.5" /> Registrati / Accedi
-      </Button>
-    )}
+    <Button
+  size="sm"
+  className="rounded-full bg-primary hover:bg-primary/90 whitespace-nowrap"
+  onClick={() => db.auth.redirectToLogin(window.location.href)}
+>
+  <LogIn className="w-4 h-4 mr-1.5" /> Registrati / Accedi
+</Button>
   </div>
 </div>
 
