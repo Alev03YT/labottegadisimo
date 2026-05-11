@@ -1,64 +1,46 @@
-const db = globalThis.__B44_DB__ || { auth:{ isAuthenticated: async()=>false, me: async()=>null }, entities:new Proxy({}, { get:()=>({ filter:async()=>[], get:async()=>null, create:async()=>({}), update:async()=>({}), delete:async()=>({}) }) }), integrations:{ Core:{ UploadFile:async()=>({ file_url:'' }) } } };
-
-import React from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-
-import { toast } from 'sonner';
+import React, { useEffect, useState } from 'react';
+import { db } from '@/lib/firebase';
+import { doc, getDoc } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, ShoppingBag, Heart, Package } from 'lucide-react';
-import { Link, useOutletContext } from 'react-router-dom';
+import { ArrowLeft, ShoppingBag, Package } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import ReviewSection from '../components/products/ReviewSection';
-
-const categoryLabels = {
-  uncinetto: 'Uncinetto',
-  ferri: 'Ferri',
-  perline: 'Perline',
-};
 
 export default function ProductDetail() {
-  const { openCart } = useOutletContext() || {};
   const urlParams = new URLSearchParams(window.location.search);
   const productId = urlParams.get('id');
-  const queryClient = useQueryClient();
 
-  const { data: product, isLoading } = useQuery({
-    queryKey: ['product', productId],
-    queryFn: async () => {
-      const products = await db.entities.Product.filter({ id: productId });
-      return products[0];
-    },
-    enabled: !!productId,
-  });
+  const [product, setProduct] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const addToCartMutation = useMutation({
-    mutationFn: async () => {
-      const cartItems = await db.entities.CartItem.list();
-      const existing = cartItems.find((item) => item.product_id === product.id);
-      if (existing) {
-        return db.entities.CartItem.update(existing.id, {
-          quantity: (existing.quantity || 1) + 1,
-        });
+  useEffect(() => {
+    const loadProduct = async () => {
+      try {
+        if (!productId) return;
+
+        const ref = doc(db, "products", productId);
+        const snap = await getDoc(ref);
+
+        if (snap.exists()) {
+          setProduct({
+            id: snap.id,
+            ...snap.data(),
+          });
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setIsLoading(false);
       }
-      return db.entities.CartItem.create({
-        product_id: product.id,
-        product_name: product.name,
-        product_image: product.image_url,
-        price: product.price,
-        quantity: 1,
-      });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['cartItems'] });
-      toast.success('Aggiunto al carrello!');
-      openCart?.();
-    },
-  });
+    };
+
+    loadProduct();
+  }, [productId]);
 
   if (isLoading) {
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <div className="max-w-7xl mx-auto px-4 py-10">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
           <div className="aspect-square bg-secondary rounded-2xl animate-pulse" />
           <div className="space-y-4">
@@ -83,18 +65,19 @@ export default function ProductDetail() {
     );
   }
 
+  const isAvailable = product.available === true || product.available === "true";
+
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div className="max-w-7xl mx-auto px-4 py-10">
       <Link
         to="/Catalog"
-        className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-8 transition-colors"
+        className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-8"
       >
         <ArrowLeft className="w-4 h-4 mr-1" />
         Torna al Catalogo
       </Link>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-14">
-        {/* Image */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -111,74 +94,69 @@ export default function ProductDetail() {
               <Package className="w-20 h-20 text-muted-foreground/30" />
             </div>
           )}
-          {product.featured && (
-            <Badge className="absolute top-4 left-4 bg-primary text-primary-foreground">
-              In Evidenza
+
+          {!isAvailable && (
+            <Badge className="absolute top-4 left-4 bg-black text-white">
+              Non disponibile
             </Badge>
           )}
         </motion.div>
 
-        {/* Details */}
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           className="flex flex-col"
         >
           <span className="text-xs font-medium uppercase tracking-[0.2em] text-primary mb-2">
-            {categoryLabels[product.category] || product.category}
+            {product.category}
           </span>
-          <h1 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-4">
+
+          <h1 className="font-heading text-3xl md:text-4xl font-bold mb-4">
             {product.name}
           </h1>
-          <p className="text-2xl font-semibold text-foreground mb-6">
-            €{product.price?.toFixed(2)}
+
+          <p className="text-2xl font-semibold mb-6">
+            €{Number(product.price || 0).toFixed(2)}
           </p>
 
-          {product.description && (
-            <p className="text-muted-foreground leading-relaxed mb-6">
-              {product.description}
-            </p>
-          )}
+          <div className="space-y-3 mb-8 text-sm">
+            {product.material && (
+              <p><b>Materiale:</b> {product.material}</p>
+            )}
 
-          <div className="space-y-3 mb-8">
-            {product.materials && (
-              <div className="flex gap-2 text-sm">
-                <span className="text-muted-foreground font-medium min-w-[80px]">Materiali:</span>
-                <span className="text-foreground">{product.materials}</span>
-              </div>
+            {product.color && (
+              <p><b>Colore:</b> {product.color}</p>
             )}
-            {product.colors && (
-              <div className="flex gap-2 text-sm">
-                <span className="text-muted-foreground font-medium min-w-[80px]">Colori:</span>
-                <span className="text-foreground">{product.colors}</span>
-              </div>
+
+            {product.dimensions && (
+              <p><b>Dimensioni:</b> {product.dimensions}</p>
             )}
-            <div className="flex gap-2 text-sm">
-              <span className="text-muted-foreground font-medium min-w-[80px]">Disponibilità:</span>
-              <span className={product.in_stock !== false ? 'text-accent' : 'text-destructive'}>
-                {product.in_stock !== false ? 'Disponibile' : 'Esaurito'}
+
+            {product.bagSize && (
+              <p><b>Misura borsa:</b> {product.bagSize}</p>
+            )}
+
+            {product.quantity !== undefined && (
+              <p><b>Quantità:</b> {product.quantity}</p>
+            )}
+
+            <p>
+              <b>Disponibilità:</b>{" "}
+              <span className={isAvailable ? "text-green-600" : "text-red-600"}>
+                {isAvailable ? "Disponibile" : "Non disponibile"}
               </span>
-            </div>
+            </p>
           </div>
 
-          <div className="flex gap-3 mt-auto">
-            <Button
-              className="flex-1 rounded-full py-6 text-sm font-medium bg-primary hover:bg-primary/90"
-              disabled={product.in_stock === false}
-              onClick={async () => {
-                const isAuth = await db.auth.isAuthenticated();
-                if (!isAuth) { db.auth.redirectToLogin(window.location.href); return; }
-                addToCartMutation.mutate();
-              }}
-            >
-              <ShoppingBag className="w-4 h-4 mr-2" />
-              {product.in_stock !== false ? 'Aggiungi al Carrello' : 'Non Disponibile'}
-            </Button>
-          </div>
+          <Button
+            className="rounded-full py-6 text-sm font-medium bg-primary hover:bg-primary/90"
+            disabled={!isAvailable}
+          >
+            <ShoppingBag className="w-4 h-4 mr-2" />
+            {isAvailable ? "Aggiungi al carrello" : "Non disponibile"}
+          </Button>
         </motion.div>
       </div>
-
-      <ReviewSection productId={productId} />
     </div>
   );
 }
