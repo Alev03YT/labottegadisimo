@@ -13,7 +13,6 @@ import { Button } from '@/components/ui/button';
 import HeroSection from '../components/home/HeroSection';
 import CategoryCards from '../components/home/CategoryCards';
 import FeaturedProducts from '../components/home/FeaturedProducts';
-import AboutSection from '../components/home/AboutSection';
 
 const HERO_IMAGE = 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69b448a22c54a90583bd1ad4/d9d0563fb_generated_407565ef.png';
 const CATEGORY_IMAGES = {
