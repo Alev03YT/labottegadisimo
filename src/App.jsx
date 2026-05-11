@@ -17,6 +17,7 @@ import Shop from './pages/Shop';
 import Contacts from './pages/Contacts';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TerminiCondizioni from './pages/TerminiCondizioni';
+import Favorites from './pages/Favorites';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
