@@ -115,25 +115,28 @@ export default function Admin() {
     setPayments(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
   };
 
-  const uploadImage = async (file, folder) => {
-    const imageRef = ref(storage, `${folder}/${Date.now()}_${file.name}`);
-    await uploadBytes(imageRef, file);
-    return await getDownloadURL(imageRef);
-  };
-
-  const addProduct = async () => {
+const addProduct = async () => {
+  try {
     if (!product.name || !product.price || !productImage) {
       alert("Inserisci nome, prezzo e foto.");
       return;
     }
 
-    const imageUrl = await uploadImage(productImage, "products");
+    const imageUrl = await new Promise((resolve) => {
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        resolve(reader.result);
+      };
+
+      reader.readAsDataURL(productImage);
+    });
 
     await addDoc(collection(db, "products"), {
       ...product,
       price: Number(product.price),
       quantity: Number(product.quantity || 0),
-      image: imageUrl,
+      image_url: imageUrl,
       createdAt: serverTimestamp(),
     });
 
@@ -148,10 +151,17 @@ export default function Admin() {
       bagSize: "",
       available: true,
     });
+
     setProductImage(null);
+
     await loadProducts();
+
     alert("Prodotto salvato.");
-  };
+  } catch (err) {
+    console.error(err);
+    alert("Errore nel salvataggio prodotto.");
+  }
+};
 
   const deleteProduct = async (id) => {
     await deleteDoc(doc(db, "products", id));
@@ -164,12 +174,21 @@ export default function Admin() {
   };
 
   const addColor = async () => {
+  try {
     if (!colorForm.name || !colorImage) {
       alert("Inserisci nome colore e foto.");
       return;
     }
 
-    const imageUrl = await uploadImage(colorImage, "colors");
+    const imageUrl = await new Promise((resolve) => {
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        resolve(reader.result);
+      };
+
+      reader.readAsDataURL(colorImage);
+    });
 
     await addDoc(collection(db, "colors"), {
       ...colorForm,
@@ -177,10 +196,21 @@ export default function Admin() {
       createdAt: serverTimestamp(),
     });
 
-    setColorForm({ name: "", type: "filato" });
+    setColorForm({
+      name: "",
+      type: "filato",
+    });
+
     setColorImage(null);
+
     await loadColors();
-  };
+
+    alert("Colore salvato.");
+  } catch (err) {
+    console.error(err);
+    alert("Errore nel salvataggio colore.");
+  }
+};
 
   const deleteColor = async (id) => {
     await deleteDoc(doc(db, "colors", id));
@@ -285,7 +315,7 @@ export default function Admin() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {products.map((p) => (
                   <div key={p.id} className="border rounded-xl p-3">
-                    <img src={p.image} alt={p.name} className="w-full h-40 object-cover rounded-xl mb-2" />
+                    <img src={p.image_url} alt={p.name} className="w-full h-40 object-cover rounded-xl mb-2" />
                     <h3 className="font-semibold">{p.name}</h3>
                     <p>{p.price}€</p>
                     <p className="text-sm text-muted-foreground">{p.category}</p>
