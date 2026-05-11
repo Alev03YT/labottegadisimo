@@ -71,25 +71,14 @@ export default function Home() {
   };
 
   return (
-    <div>
-      <HeroSection heroImage={HERO_IMAGE} />
-      {isAuth === false && (
-        <div className="bg-primary/5 border-y border-primary/20 py-4">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3">
-            <p className="text-sm text-foreground font-medium">Accedi o registrati per acquistare e tenere traccia dei tuoi ordini</p>
-            <Button
-                size="sm"
-                className="rounded-full bg-primary hover:bg-primary/90"
-                onClick={() => db.auth.redirectToLogin(window.location.href)}
-              >
-                <LogIn className="w-4 h-4 mr-1.5" /> Registrati / Accedi
-              </Button>
-          </div>
-        </div>
-      )}
-      <CategoryCards images={CATEGORY_IMAGES} />
-      <FeaturedProducts products={products} onAddToCart={handleAddToCart} />
-      <AboutSection />
-    </div>
-  );
+  <div>
+    <HeroSection heroImage={HERO_IMAGE} />
+    <CategoryCards images={CATEGORY_IMAGES} />
+    <FeaturedProducts products={products} onAddToCart={handleAddToCart} />
+
+    <ReviewsSection />
+    <FaqSection />
+    <AboutSection />
+  </div>
+);
 }
