@@ -4,12 +4,11 @@ import { doc, getDoc } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, ShoppingBag, Package } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 export default function ProductDetail() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const productId = urlParams.get('id');
+  const { id: productId } = useParams();
 
   const [product, setProduct] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
