@@ -28,6 +28,7 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
     { label: 'Contatti', path: '/Contacts' },
     { label: 'I Miei Ordini', path: '/Orders' },
     { label: 'Admin', path: '/Admin', adminOnly: true },
+    { label: 'Preferiti', path: '/Favorites' },
   ];
 
   const navLinks = allNavLinks.filter(l => !l.adminOnly || (isAdmin === true));
