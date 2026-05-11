@@ -32,7 +32,7 @@ export default function Shop() {
           {products.map((p) => (
             <Link
               key={p.id}
-              to={`/ProductDetail${p.id}`}
+              to={`/ProductDetail/${p.id}`}
               className="border rounded-2xl p-3 block hover:shadow-md transition-shadow"
             >
               <div className="aspect-square bg-secondary rounded-xl overflow-hidden mb-3">
