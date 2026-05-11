@@ -36,23 +36,23 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
     <header className="sticky top-0 z-50">
 
       {/* BARRA LOGIN SOPRA */}
-      <div className="w-full bg-secondary/60 border-b border-border/50">
-  <div className="max-w-7xl mx-auto px-3 py-1.5 flex justify-between items-center gap-2">
-    <span className="text-[11px] sm:text-xs text-muted-foreground leading-tight">
-      Accedi o registrati per acquistare e tracciare i tuoi ordini
-    </span>
+      <div className="w-full bg-primary/5 border-b border-primary/20">
+  <div className="max-w-7xl mx-auto px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-2">
+    <p className="text-sm text-foreground font-medium text-center sm:text-left">
+      Accedi o registrati per acquistare e tenere traccia dei tuoi ordini
+    </p>
 
-          {isAuth === false && (
-            <Button
-              size="sm"
-              className="rounded-full text-[11px] px-2 py-1 h-7 whitespace-nowrap"
-              onClick={() => db.auth.redirectToLogin(window.location.href)}
-            >
-              <LogIn className="w-3 h-3 mr-1" /> Registrati / Accedi
-            </Button>
-          )}
-        </div>
-      </div>
+    {isAuth === false && (
+      <Button
+        size="sm"
+        className="rounded-full bg-primary hover:bg-primary/90"
+        onClick={() => db.auth.redirectToLogin(window.location.href)}
+      >
+        <LogIn className="w-4 h-4 mr-1.5" /> Registrati / Accedi
+      </Button>
+    )}
+  </div>
+</div>
 
       {/* NAVBAR */}
       <div className="bg-background/80 backdrop-blur-md border-b border-border/50">
