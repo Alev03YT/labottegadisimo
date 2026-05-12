@@ -3,23 +3,71 @@ import { Link } from "react-router-dom";
 import { Heart, ShoppingBag, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CATEGORY_LABELS } from "@/components/categories";
+import { db } from "@/lib/firebase";
+import { doc, getDoc } from "firebase/firestore";
 
 export default function Favorites() {
   const [favorites, setFavorites] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const loadFavorites = async () => {
+    try {
+      const saved = JSON.parse(localStorage.getItem("favorites") || "[]");
+
+      const updatedProducts = await Promise.all(
+        saved.map(async (item) => {
+          const snap = await getDoc(doc(db, "products", item.id));
+
+          if (snap.exists()) {
+            return {
+              id: snap.id,
+              ...snap.data(),
+            };
+          }
+
+          return item;
+        })
+      );
+
+      setFavorites(updatedProducts);
+    } catch (err) {
+      console.error("Errore caricamento preferiti:", err);
+      setFavorites([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    try {
-      setFavorites(JSON.parse(localStorage.getItem("favorites") || "[]"));
-    } catch {
-      setFavorites([]);
-    }
+    loadFavorites();
   }, []);
 
   const removeFavorite = (id) => {
     const updated = favorites.filter((p) => p.id !== id);
+
     setFavorites(updated);
-    localStorage.setItem("favorites", JSON.stringify(updated));
+
+    localStorage.setItem(
+      "favorites",
+      JSON.stringify(
+        updated.map((p) => ({
+          id: p.id,
+          name: p.name,
+          image_url: p.image_url,
+          category: p.category,
+          price: p.price,
+        }))
+      )
+    );
   };
+
+  if (isLoading) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 py-20 text-center">
+        <p className="text-muted-foreground">Caricamento preferiti...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16">
@@ -104,9 +152,11 @@ export default function Favorites() {
                 </button>
 
                 {isAvailable && (
-                  <button className="mt-2 w-full rounded-full bg-black text-white px-3 py-2 text-xs hover:opacity-90">
-                    Aggiungi al carrello
-                  </button>
+                  <Link to={`/ProductDetail/${product.id}`}>
+                    <button className="mt-2 w-full rounded-full bg-black text-white px-3 py-2 text-xs hover:opacity-90">
+                      Vai al prodotto
+                    </button>
+                  </Link>
                 )}
               </div>
             );
