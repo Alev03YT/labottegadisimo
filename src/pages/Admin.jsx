@@ -167,7 +167,13 @@ const addProduct = async () => {
     await deleteDoc(doc(db, "products", id));
     await loadProducts();
   };
+const toggleAvailability = async (product) => {
+  await updateDoc(doc(db, "products", product.id), {
+    available: !product.available,
+  });
 
+  await loadProducts();
+};
   const updateOrderStatus = async (id, status) => {
     await updateDoc(doc(db, "orders", id), { status });
     await loadOrders();
