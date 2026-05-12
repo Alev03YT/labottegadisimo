@@ -326,6 +326,14 @@ const toggleAvailability = async (product) => {
                     <p>{p.price}€</p>
                     <p className="text-sm text-muted-foreground">{p.category}</p>
                     <p className="text-sm">{p.available ? "Disponibile" : "Non disponibile"}</p>
+                    <button
+  onClick={() => toggleAvailability(p)}
+  className="mt-2 w-full bg-black text-white rounded-xl py-2 text-sm"
+>
+  {p.available
+    ? "Segna come non disponibile"
+    : "Segna come disponibile"}
+</button>
                     <button onClick={() => deleteProduct(p.id)} className="text-red-600 text-sm mt-2">
                       Elimina
                     </button>
