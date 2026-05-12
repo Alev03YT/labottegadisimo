@@ -34,7 +34,7 @@ export default function Favorites() {
         </h1>
 
         <p className="text-muted-foreground text-sm mt-2">
-          Qui trovi gli articoli non disponibili che hai salvato.
+          Qui trovi gli articoli che hai salvato.
         </p>
       </div>
 
@@ -46,54 +46,71 @@ export default function Favorites() {
           </p>
 
           <Link to="/Catalog">
-            <Button className="rounded-full">
-              Vai al catalogo
-            </Button>
+            <Button className="rounded-full">Vai al catalogo</Button>
           </Link>
         </div>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-          {favorites.map((product) => (
-            <div key={product.id} className="group relative">
-              <Link to={`/ProductDetail?id=${product.id}`} className="block">
-                <div className="relative aspect-square rounded-2xl overflow-hidden bg-secondary mb-3">
-                  {product.image_url ? (
-                    <img
-                      src={product.image_url}
-                      alt={product.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <ShoppingBag className="w-12 h-12 opacity-30 text-muted-foreground" />
-                    </div>
+          {favorites.map((product) => {
+            const isAvailable =
+              product.available === true || product.available === "true";
+
+            return (
+              <div key={product.id} className="group relative">
+                <Link to={`/ProductDetail/${product.id}`} className="block">
+                  <div className="relative aspect-square rounded-2xl overflow-hidden bg-secondary mb-3">
+                    {product.image_url ? (
+                      <img
+                        src={product.image_url}
+                        alt={product.name}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <ShoppingBag className="w-12 h-12 opacity-30 text-muted-foreground" />
+                      </div>
+                    )}
+                  </div>
+
+                  <span className="text-[10px] font-medium uppercase tracking-widest text-primary">
+                    {CATEGORY_LABELS[product.category] || product.category}
+                  </span>
+
+                  <h3 className="font-heading text-sm font-medium text-foreground mt-0.5 leading-snug line-clamp-2">
+                    {product.name}
+                  </h3>
+
+                  {product.price && (
+                    <p className="text-sm font-semibold mt-1">
+                      {product.price}€
+                    </p>
                   )}
-                </div>
 
-                <span className="text-[10px] font-medium uppercase tracking-widest text-primary">
-                  {CATEGORY_LABELS[product.category] || product.category}
-                </span>
-
-                <h3 className="font-heading text-sm font-medium text-foreground mt-0.5 leading-snug line-clamp-2">
-                  {product.name}
-                </h3>
-
-                {product.price && (
-                  <p className="text-sm font-semibold mt-1">
-                    {product.price}€
+                  <p
+                    className={`text-xs mt-1 font-medium ${
+                      isAvailable ? "text-green-600" : "text-red-600"
+                    }`}
+                  >
+                    {isAvailable ? "Ora disponibile" : "Non disponibile"}
                   </p>
-                )}
-              </Link>
+                </Link>
 
-              <button
-                onClick={() => removeFavorite(product.id)}
-                className="mt-2 w-full rounded-full border px-3 py-2 text-xs flex items-center justify-center gap-1 hover:bg-red-50 hover:text-red-600"
-              >
-                <Trash2 className="w-3 h-3" />
-                Rimuovi
-              </button>
-            </div>
-          ))}
+                <button
+                  onClick={() => removeFavorite(product.id)}
+                  className="mt-2 w-full rounded-full border px-3 py-2 text-xs flex items-center justify-center gap-1 hover:bg-red-50 hover:text-red-600"
+                >
+                  <Trash2 className="w-3 h-3" />
+                  Rimuovi
+                </button>
+
+                {isAvailable && (
+                  <button className="mt-2 w-full rounded-full bg-black text-white px-3 py-2 text-xs hover:opacity-90">
+                    Aggiungi al carrello
+                  </button>
+                )}
+              </div>
+            );
+          })}
         </div>
       )}
     </div>
