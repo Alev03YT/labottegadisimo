@@ -18,6 +18,7 @@ import Contacts from './pages/Contacts';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TerminiCondizioni from './pages/TerminiCondizioni';
 import Favorites from './pages/Favorites';
+import Login from './pages/Login';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -54,6 +55,7 @@ const AuthenticatedApp = () => {
         <Route path="/PrivacyPolicy" element={<PrivacyPolicy />} />
         <Route path="/TerminiCondizioni" element={<TerminiCondizioni />} />
         <Route path="/Favorites" element={<Favorites />} />
+        <Route path="/Login" element={<Login />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
