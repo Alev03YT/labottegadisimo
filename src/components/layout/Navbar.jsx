@@ -46,9 +46,9 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
     <Button
   size="sm"
   className="rounded-full bg-primary hover:bg-primary/90 whitespace-nowrap"
-  onClick={() => db.auth.redirectToLogin(window.location.href)}
->
-  <LogIn className="w-4 h-4 mr-1.5" /> Registrati / Accedi
+  onClick={() => window.location.href = "#/Login"}
+  >
+    <LogIn className="w-4 h-4 mr-1.5" /> Registrati / Accedi
 </Button>
   </div>
 </div>
