@@ -1,6 +1,6 @@
 const db = globalThis.__B44_DB__ || { auth:{ isAuthenticated: async()=>false, me: async()=>null, redirectToLogin:()=>{} } };
 
-import logo from "@/assets/logo.png";
+import logo from "../../assets/logo.png";
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { ShoppingBag, LogIn, Menu, X } from 'lucide-react';
