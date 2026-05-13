@@ -5,7 +5,7 @@ import FaqSection from "@/components/home/FaqSection";
 import AboutSection from "@/components/home/AboutSection";
 import React, { useEffect, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import ricamoImg from "@/assets/ricamo.jpg";
+import ricamoImg from "../assets/ricamo.jpg";
 
 import { toast } from 'sonner';
 import { useOutletContext, Link } from 'react-router-dom';
