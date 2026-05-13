@@ -17,6 +17,11 @@ const categories = [
     title: 'Perline & Gioielli',
     description: 'Collane, bracciali, orecchini handmade',
   },
+  {
+    key: 'ricamo',
+    title: 'Ricamo',
+    description: 'Punto croce e mezzo punto — quadri, set asilo, asciugamani',
+  },
 ];
 
 export default function CategoryCards({ images }) {
