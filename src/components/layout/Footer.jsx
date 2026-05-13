@@ -24,6 +24,7 @@ export default function Footer() {
               <li>Accessori & Gioielli</li>
               <li>Amigurumi</li>
               <li>Schemi Digitali</li>
+              <li>Ricamo</li>
             </ul>
           </div>
           <div>
