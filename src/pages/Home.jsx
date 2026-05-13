@@ -20,6 +20,7 @@ const CATEGORY_IMAGES = {
   uncinetto: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69b448a22c54a90583bd1ad4/bc18bcd2f_generated_e8952fdb.png',
   ferri: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69b448a22c54a90583bd1ad4/38a68fcb1_generated_06e223ea.png',
   perline: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69b448a22c54a90583bd1ad4/0b26490b2_generated_f10486b3.png',
+  ricamo: ricamoImg,
 };
 
 export default function Home() {
