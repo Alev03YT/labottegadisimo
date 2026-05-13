@@ -19,4 +19,5 @@ export const CATEGORIES_FILTER = [
   { key: 'amigurumi', label: 'Amigurumi' },
   { key: 'gioielli', label: 'Gioielli' },
   { key: 'schemi_digitali', label: 'Schemi Digitali' },
+  { key: 'ricamo', label: 'Ricamo' },
 ];
