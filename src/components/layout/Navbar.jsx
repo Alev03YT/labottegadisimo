@@ -1,5 +1,6 @@
 const db = globalThis.__B44_DB__ || { auth:{ isAuthenticated: async()=>false, me: async()=>null, redirectToLogin:()=>{} } };
 
+import logo from "@/assets/logo.png";
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { ShoppingBag, LogIn, Menu, X } from 'lucide-react';
@@ -98,7 +99,11 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
         <div className="max-w-7xl mx-auto px-4 h-16 flex justify-between items-center">
 
           <Link to="/Home" className="flex items-center gap-2">
-            <img src="https://media.db.com/images/public/69b448a22c54a90583bd1ad4/c685ee6b7_logo-mini.png" className="h-10" />
+            <img
+  src={logo}
+  alt="La Bottega di Simo"
+  className="h-12 w-auto object-contain"
+/>
             <span className="font-semibold text-sm">La Bottega di Simo</span>
           </Link>
 
