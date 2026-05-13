@@ -4,18 +4,34 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { ShoppingBag, LogIn, Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { auth } from "@/lib/firebase";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 
 export default function Navbar({ cartCount = 0, onCartClick }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(null);
   const [isAuth, setIsAuth] = useState(null);
+  const [user, setUser] = useState(null);
   const location = useLocation();
 
   useEffect(() => {
-    db.auth.me()
-      .then(u => { setIsAdmin(u?.role === 'admin'); setIsAuth(true); })
-      .catch(() => setIsAuth(false));
-  }, []);
+  const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    if (currentUser) {
+      setUser(currentUser);
+      setIsAuth(true);
+
+      if (currentUser.email === "info@labottegadisimo.it") {
+        setIsAdmin(true);
+      }
+    } else {
+      setUser(null);
+      setIsAuth(false);
+      setIsAdmin(false);
+    }
+  });
+
+  return () => unsubscribe();
+}, []);
 
   useEffect(() => {
     setMenuOpen(false);
@@ -39,17 +55,41 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
       {/* BARRA LOGIN SOPRA */}
       <div className="w-full bg-primary/5 border-b border-primary/20">
   <div className="max-w-7xl mx-auto px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-2">
-    <p className="text-sm text-foreground font-medium text-center sm:text-left">
-      Accedi o registrati per acquistare e tenere traccia dei tuoi ordini
-    </p>
 
-    <Button
-  size="sm"
-  className="rounded-full bg-primary hover:bg-primary/90 whitespace-nowrap"
-  onClick={() => window.location.href = "#/Login"}
-  >
-    <LogIn className="w-4 h-4 mr-1.5" /> Registrati / Accedi
-</Button>
+    {!isAuth ? (
+      <>
+        <p className="text-sm text-foreground font-medium text-center sm:text-left">
+          Accedi o registrati per acquistare e tenere traccia dei tuoi ordini
+        </p>
+
+        <Button
+          size="sm"
+          className="rounded-full bg-primary hover:bg-primary/90 whitespace-nowrap"
+          onClick={() => window.location.href = "#/Login"}
+        >
+          <LogIn className="w-4 h-4 mr-1.5" />
+          Registrati / Accedi
+        </Button>
+      </>
+    ) : (
+      <>
+        <p className="text-sm font-medium">
+          Benvenuto, {user?.displayName || user?.email}
+        </p>
+
+        <Button
+          size="sm"
+          variant="outline"
+          className="rounded-full"
+          onClick={async () => {
+            await signOut(auth);
+            window.location.href = "#/Home";
+          }}
+        >
+          Logout
+        </Button>
+      </>
+    )}
   </div>
 </div>
 
