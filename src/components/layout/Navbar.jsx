@@ -108,14 +108,14 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
           </Link>
 
           <div className="flex items-center gap-2">
-            <button onClick={onCartClick} className="relative p-2">
-              <ShoppingBag className="w-5 h-5" />
+            <Link to="/Cart" className="relative p-2">
+  <ShoppingBag className="w-5 h-5" />
               {cartCount > 0 && (
                 <span className="absolute -top-1 -right-1 bg-black text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                   {cartCount}
                 </span>
               )}
-            </button>
+            </Link>
 
             <button onClick={() => setMenuOpen(!menuOpen)}>
               {menuOpen ? <X /> : <Menu />}
