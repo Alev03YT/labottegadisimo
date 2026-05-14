@@ -1,17 +1,28 @@
 import React, { useEffect, useState } from 'react';
-import { db } from '@/lib/firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { auth, db } from '@/lib/firebase';
+import {
+  doc,
+  getDoc,
+  collection,
+  addDoc,
+  getDocs,
+  query,
+  where,
+  updateDoc,
+} from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, ShoppingBag, Package } from 'lucide-react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useOutletContext } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 export default function ProductDetail() {
   const { id: productId } = useParams();
+  const { refreshCart } = useOutletContext() || {};
 
   const [product, setProduct] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [adding, setAdding] = useState(false);
 
   useEffect(() => {
     const loadProduct = async () => {
@@ -36,6 +47,57 @@ export default function ProductDetail() {
 
     loadProduct();
   }, [productId]);
+
+  const addToCart = async () => {
+    try {
+      const user = auth.currentUser;
+
+      if (!user) {
+        window.location.href = "#/Login";
+        return;
+      }
+
+      if (!product) return;
+
+      setAdding(true);
+
+      const q = query(
+        collection(db, "cartItems"),
+        where("userId", "==", user.uid),
+        where("product_id", "==", product.id)
+      );
+
+      const snap = await getDocs(q);
+
+      if (!snap.empty) {
+        const existing = snap.docs[0];
+        const currentQty = existing.data().quantity || 1;
+
+        await updateDoc(doc(db, "cartItems", existing.id), {
+          quantity: currentQty + 1,
+        });
+      } else {
+        await addDoc(collection(db, "cartItems"), {
+          userId: user.uid,
+          product_id: product.id,
+          product_name: product.name,
+          product_image: product.image_url || "",
+          price: Number(product.price || 0),
+          quantity: 1,
+          createdAt: new Date(),
+        });
+      }
+
+      await refreshCart?.();
+
+      alert("Prodotto aggiunto al carrello!");
+    } catch (err) {
+      console.error(err);
+      alert("Errore nell'aggiunta al carrello.");
+    } finally {
+      setAdding(false);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -119,25 +181,11 @@ export default function ProductDetail() {
           </p>
 
           <div className="space-y-3 mb-8 text-sm">
-            {product.material && (
-              <p><b>Materiale:</b> {product.material}</p>
-            )}
-
-            {product.color && (
-              <p><b>Colore:</b> {product.color}</p>
-            )}
-
-            {product.dimensions && (
-              <p><b>Dimensioni:</b> {product.dimensions}</p>
-            )}
-
-            {product.bagSize && (
-              <p><b>Misura borsa:</b> {product.bagSize}</p>
-            )}
-
-            {product.quantity !== undefined && (
-              <p><b>Quantità:</b> {product.quantity}</p>
-            )}
+            {product.material && <p><b>Materiale:</b> {product.material}</p>}
+            {product.color && <p><b>Colore:</b> {product.color}</p>}
+            {product.dimensions && <p><b>Dimensioni:</b> {product.dimensions}</p>}
+            {product.bagSize && <p><b>Misura borsa:</b> {product.bagSize}</p>}
+            {product.quantity !== undefined && <p><b>Quantità:</b> {product.quantity}</p>}
 
             <p>
               <b>Disponibilità:</b>{" "}
@@ -149,10 +197,15 @@ export default function ProductDetail() {
 
           <Button
             className="rounded-full py-6 text-sm font-medium bg-primary hover:bg-primary/90"
-            disabled={!isAvailable}
+            disabled={!isAvailable || adding}
+            onClick={addToCart}
           >
             <ShoppingBag className="w-4 h-4 mr-2" />
-            {isAvailable ? "Aggiungi al carrello" : "Non disponibile"}
+            {!isAvailable
+              ? "Non disponibile"
+              : adding
+              ? "Aggiungo..."
+              : "Aggiungi al carrello"}
           </Button>
         </motion.div>
       </div>
