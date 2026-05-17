@@ -32,12 +32,6 @@ export default function HeroSection({ heroImage }) {
           <p className="text-muted-foreground text-base md:text-lg leading-relaxed mb-8 max-w-md">
             Ogni pezzo è unico, realizzato con cura e dedizione. Scopri le mie creazioni ad uncinetto, ai ferri e con perline.
           </p>
-          <Link to="/Catalog">
-            <Button className="rounded-full px-8 py-6 text-sm font-medium bg-primary hover:bg-primary/90">
-              Scopri la Collezione
-              <ArrowRight className="w-4 h-4 ml-2" />
-            </Button>
-          </Link>
         </motion.div>
       </div>
     </section>
