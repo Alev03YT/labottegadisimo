@@ -3,7 +3,11 @@ import { defineConfig } from 'vite'
 import path from 'path'
 
 export default defineConfig({
-  base: '/labottegadisimo/',
-  resolve: { alias: { '@': path.resolve(__dirname, './src') } },
+  base: '/',
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src')
+    }
+  },
   plugins: [react()],
 })
