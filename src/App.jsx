@@ -19,6 +19,7 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import TerminiCondizioni from './pages/TerminiCondizioni';
 import Favorites from './pages/Favorites';
 import Login from './pages/Login';
+import ScrollToTop from "@/components/ScrollToTop";
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -67,6 +68,7 @@ function App() {
     <AuthProvider>
       <QueryClientProvider client={queryClientInstance}>
         <Router>
+  <ScrollToTop />
   <AuthenticatedApp />
 </Router>
         <Toaster />
