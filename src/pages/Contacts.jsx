@@ -8,22 +8,24 @@ import {
 } from "firebase/firestore";
 
 import { Button } from "@/components/ui/button";
-import { Mail, MessageCircle, Send } from "lucide-react";
+import { Mail, MessageCircle, Send, Upload } from "lucide-react";
 
 const EMPTY = {
-  requestType: "Informazioni",
+  requestType: "",
   articleName: "",
   name: "",
   email: "",
   phone: "",
+  measureType: "",
+  measureCm: "",
   threadColor: "",
   material: "",
-  leatherType: "",
-  hardwareType: "",
   size: "",
-  measureCm: "",
+  leatherType: "",
   leatherColor: "",
+  hardwareType: "",
   message: "",
+  fileName: "",
 };
 
 export default function Contacts() {
@@ -33,11 +35,13 @@ export default function Contacts() {
   const [form, setForm] = useState({
     ...EMPTY,
     articleName: productFromUrl,
-    requestType: productFromUrl ? "Preventivo" : "Informazioni",
+    requestType: productFromUrl ? "Preventivo" : "",
   });
 
   const [colors, setColors] = useState([]);
   const [sending, setSending] = useState(false);
+  const [acceptedPrivacy, setAcceptedPrivacy] = useState(false);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
 
   useEffect(() => {
     const loadOptions = async () => {
@@ -59,9 +63,19 @@ export default function Contacts() {
     }));
   };
 
+  const fieldClass =
+    "w-full mt-2 rounded-2xl border border-border/70 bg-white px-4 py-4 text-base outline-none shadow-sm focus:border-primary focus:ring-2 focus:ring-primary/20";
+
+  const labelClass = "text-base font-semibold text-foreground";
+
   const handleSubmit = async () => {
-    if (!form.name || !form.email || !form.requestType) {
-      alert("Compila nome, email e tipo richiesta.");
+    if (!form.requestType || !form.name || !form.email) {
+      alert("Compila tipo richiesta, nome ed email.");
+      return;
+    }
+
+    if (!acceptedPrivacy || !acceptedTerms) {
+      alert("Devi accettare Privacy Policy e Termini e Condizioni.");
       return;
     }
 
@@ -79,8 +93,10 @@ export default function Contacts() {
       setForm({
         ...EMPTY,
         articleName: "",
-        requestType: "Informazioni",
+        requestType: "",
       });
+      setAcceptedPrivacy(false);
+      setAcceptedTerms(false);
     } catch (err) {
       console.error(err);
       alert("Errore durante l'invio della richiesta.");
@@ -90,217 +106,297 @@ export default function Contacts() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16">
-      <div className="mb-10">
-        <span className="text-xs font-medium uppercase tracking-[0.2em] text-primary mb-3 block">
-          Scrivici
-        </span>
+    <div className="bg-[#fbf7f5]">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16">
+        <div className="mb-10">
+          <span className="text-sm font-semibold uppercase tracking-[0.35em] text-primary mb-4 block">
+            SCRIVICI
+          </span>
 
-        <h1 className="font-heading text-3xl md:text-4xl font-bold text-foreground">
-          Contatti
-        </h1>
+          <h1 className="font-heading text-5xl md:text-6xl font-bold text-foreground mb-4">
+            Contatti
+          </h1>
 
-        <p className="text-muted-foreground mt-2 text-sm">
-          Hai una domanda o vuoi un preventivo? Compila il modulo.
-        </p>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-        <div className="space-y-6">
-          <div className="bg-card border border-border/50 rounded-2xl p-6 space-y-5">
-            <h3 className="font-heading text-lg font-semibold">Contattaci</h3>
-
-            <a
-              href="mailto:info@labottegadisimo.it"
-              className="flex items-center gap-3 text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                <Mail className="w-4 h-4 text-primary" />
-              </div>
-              <span>info@labottegadisimo.it</span>
-            </a>
-
-            <a
-              href="https://wa.me/393477922931"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-3 text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                <MessageCircle className="w-4 h-4 text-primary" />
-              </div>
-              <span>347-7922931 (WhatsApp)</span>
-            </a>
-          </div>
+          <p className="text-muted-foreground text-xl leading-relaxed">
+            Hai una domanda o vuoi un preventivo? Siamo qui!
+          </p>
         </div>
 
-        <div className="lg:col-span-2 bg-card border border-border/50 rounded-2xl p-6 md:p-8 space-y-5">
-          <h3 className="font-heading text-lg font-semibold">
-            Informazioni / Preventivo
-          </h3>
+        <div className="space-y-10">
+          <div className="bg-white border border-border/50 rounded-[2rem] p-7 md:p-10 shadow-sm">
+            <h3 className="font-heading text-3xl font-bold mb-8">
+              Contattaci
+            </h3>
 
-          <div>
-            <label className="text-sm font-medium">Tipo richiesta *</label>
-            <select
-              className="border rounded-xl p-3 w-full mt-1"
-              value={form.requestType}
-              onChange={set("requestType")}
-            >
-              <option value="Informazioni">Informazioni</option>
-              <option value="Preventivo">Preventivo</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="text-sm font-medium">Articolo di riferimento</label>
-            <input
-              className="border rounded-xl p-3 w-full mt-1"
-              value={form.articleName}
-              onChange={set("articleName")}
-              placeholder="Nome articolo"
-            />
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="text-sm font-medium">Nome *</label>
-              <input
-                className="border rounded-xl p-3 w-full mt-1"
-                value={form.name}
-                onChange={set("name")}
-                placeholder="Il tuo nome"
-              />
-            </div>
-
-            <div>
-              <label className="text-sm font-medium">Email *</label>
-              <input
-                className="border rounded-xl p-3 w-full mt-1"
-                type="email"
-                value={form.email}
-                onChange={set("email")}
-                placeholder="email@esempio.it"
-              />
-            </div>
-
-            <div>
-              <label className="text-sm font-medium">Telefono</label>
-              <input
-                className="border rounded-xl p-3 w-full mt-1"
-                value={form.phone}
-                onChange={set("phone")}
-                placeholder="333 1234567"
-              />
-            </div>
-
-            <div>
-              <label className="text-sm font-medium">Taglia</label>
-              <input
-                className="border rounded-xl p-3 w-full mt-1"
-                value={form.size}
-                onChange={set("size")}
-                placeholder="S / M / L / XL..."
-              />
-            </div>
-
-            <div>
-              <label className="text-sm font-medium">Misura in cm</label>
-              <input
-                className="border rounded-xl p-3 w-full mt-1"
-                value={form.measureCm}
-                onChange={set("measureCm")}
-                placeholder="es. 30 x 20 cm"
-              />
-            </div>
-
-            <div>
-              <label className="text-sm font-medium">Materiale</label>
-              <input
-                className="border rounded-xl p-3 w-full mt-1"
-                value={form.material}
-                onChange={set("material")}
-                placeholder="Cotone, lana, pelle..."
-              />
-            </div>
-
-            <div>
-              <label className="text-sm font-medium">Colore filato</label>
-              <select
-                className="border rounded-xl p-3 w-full mt-1"
-                value={form.threadColor}
-                onChange={set("threadColor")}
+            <div className="space-y-6">
+              <a
+                href="mailto:info@labottegadisimo.it"
+                className="flex items-center gap-5 text-lg text-muted-foreground hover:text-foreground transition-colors"
               >
-                <option value="">Seleziona colore</option>
-                {threadColors.map((c) => (
-                  <option key={c.id} value={c.name}>
-                    {c.name}
-                  </option>
-                ))}
-              </select>
-            </div>
+                <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                  <Mail className="w-6 h-6 text-primary" />
+                </div>
+                <span>info@labottegadisimo.it</span>
+              </a>
 
-            <div>
-              <label className="text-sm font-medium">Tipo pelle</label>
-              <input
-                className="border rounded-xl p-3 w-full mt-1"
-                value={form.leatherType}
-                onChange={set("leatherType")}
-                placeholder="Pelle, ecopelle..."
-              />
-            </div>
-
-            <div>
-              <label className="text-sm font-medium">Colore pelle</label>
-              <select
-                className="border rounded-xl p-3 w-full mt-1"
-                value={form.leatherColor}
-                onChange={set("leatherColor")}
+              <a
+                href="https://wa.me/393477922931"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-5 text-lg text-muted-foreground hover:text-foreground transition-colors"
               >
-                <option value="">Seleziona colore pelle</option>
-                {leatherColors.map((c) => (
-                  <option key={c.id} value={c.name}>
-                    {c.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="text-sm font-medium">Tipo minuteria</label>
-              <select
-                className="border rounded-xl p-3 w-full mt-1"
-                value={form.hardwareType}
-                onChange={set("hardwareType")}
-              >
-                <option value="">Seleziona minuteria</option>
-                {hardwareColors.map((c) => (
-                  <option key={c.id} value={c.name}>
-                    {c.name}
-                  </option>
-                ))}
-              </select>
+                <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                  <MessageCircle className="w-6 h-6 text-primary" />
+                </div>
+                <span>347-7922931 (WhatsApp)</span>
+              </a>
             </div>
           </div>
 
-          <div>
-            <label className="text-sm font-medium">Messaggio</label>
-            <textarea
-              className="border rounded-xl p-3 w-full mt-1"
-              rows={4}
-              value={form.message}
-              onChange={set("message")}
-              placeholder="Descrivi la tua richiesta..."
-            />
-          </div>
+          <div className="bg-white border border-border/50 rounded-[2rem] p-7 md:p-10 shadow-sm">
+            <h3 className="font-heading text-3xl font-bold mb-8">
+              Informazioni / Preventivo
+            </h3>
 
-          <Button
-            className="w-full rounded-full bg-primary hover:bg-primary/90 py-5"
-            onClick={handleSubmit}
-            disabled={sending}
-          >
-            <Send className="w-4 h-4 mr-2" />
-            {sending ? "Invio in corso..." : "Invia richiesta"}
-          </Button>
+            <div className="space-y-7">
+              <div>
+                <label className={labelClass}>Tipo di richiesta *</label>
+                <select
+                  className={fieldClass}
+                  value={form.requestType}
+                  onChange={set("requestType")}
+                >
+                  <option value="">Seleziona...</option>
+                  <option value="Informazioni">Informazioni</option>
+                  <option value="Preventivo">Preventivo</option>
+                </select>
+              </div>
+
+              {form.articleName && (
+                <div>
+                  <label className={labelClass}>Articolo di riferimento</label>
+                  <input
+                    className={fieldClass}
+                    value={form.articleName}
+                    onChange={set("articleName")}
+                    placeholder="Nome articolo"
+                  />
+                </div>
+              )}
+
+              <div>
+                <label className={labelClass}>Nome *</label>
+                <input
+                  className={fieldClass}
+                  value={form.name}
+                  onChange={set("name")}
+                  placeholder="Il tuo nome"
+                />
+              </div>
+
+              <div>
+                <label className={labelClass}>Email *</label>
+                <input
+                  className={fieldClass}
+                  type="email"
+                  value={form.email}
+                  onChange={set("email")}
+                  placeholder="email@esempio.it"
+                />
+              </div>
+
+              <div>
+                <label className={labelClass}>Telefono</label>
+                <input
+                  className={fieldClass}
+                  value={form.phone}
+                  onChange={set("phone")}
+                  placeholder="333 1234567"
+                />
+              </div>
+
+              <div>
+                <label className={labelClass}>Tipo di misura</label>
+                <select
+                  className={fieldClass}
+                  value={form.measureType}
+                  onChange={set("measureType")}
+                >
+                  <option value="">Seleziona tipo...</option>
+                  <option value="Larghezza">Larghezza</option>
+                  <option value="Altezza">Altezza</option>
+                  <option value="Profondità">Profondità</option>
+                  <option value="Circonferenza">Circonferenza</option>
+                  <option value="Personalizzata">Personalizzata</option>
+                </select>
+              </div>
+
+              <div>
+                <label className={labelClass}>Misure</label>
+                <input
+                  className={fieldClass}
+                  value={form.measureCm}
+                  onChange={set("measureCm")}
+                  placeholder="Inserisci le misure..."
+                />
+              </div>
+
+              <div>
+                <label className={labelClass}>Colore Materiale</label>
+                <select
+                  className={fieldClass}
+                  value={form.threadColor}
+                  onChange={set("threadColor")}
+                >
+                  <option value="">Seleziona colore...</option>
+                  {threadColors.map((c) => (
+                    <option key={c.id} value={c.name}>
+                      {c.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className={labelClass}>Taglia</label>
+                <select
+                  className={fieldClass}
+                  value={form.size}
+                  onChange={set("size")}
+                >
+                  <option value="">Seleziona taglia...</option>
+                  <option value="Neonato">Neonato</option>
+                  <option value="Bambino">Bambino</option>
+                  <option value="XS">XS</option>
+                  <option value="S">S</option>
+                  <option value="M">M</option>
+                  <option value="L">L</option>
+                  <option value="XL">XL</option>
+                  <option value="Su misura">Su misura</option>
+                </select>
+              </div>
+
+              <div>
+                <label className={labelClass}>Elementi (Pelle/Ecopelle)</label>
+                <select
+                  className={fieldClass}
+                  value={form.leatherType}
+                  onChange={set("leatherType")}
+                >
+                  <option value="">Seleziona elemento...</option>
+                  <option value="Pelle">Pelle</option>
+                  <option value="Ecopelle">Ecopelle</option>
+                  <option value="Nessuno">Nessuno</option>
+                </select>
+              </div>
+
+              <div>
+                <label className={labelClass}>Colore Pelle</label>
+                <select
+                  className={fieldClass}
+                  value={form.leatherColor}
+                  onChange={set("leatherColor")}
+                >
+                  <option value="">Seleziona colore pelle...</option>
+                  {leatherColors.map((c) => (
+                    <option key={c.id} value={c.name}>
+                      {c.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className={labelClass}>Colore Minuteria</label>
+                <select
+                  className={fieldClass}
+                  value={form.hardwareType}
+                  onChange={set("hardwareType")}
+                >
+                  <option value="">Seleziona colore minuteria...</option>
+                  {hardwareColors.map((c) => (
+                    <option key={c.id} value={c.name}>
+                      {c.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className={labelClass}>Messaggio</label>
+                <textarea
+                  className={`${fieldClass} min-h-[140px] resize-none`}
+                  rows={4}
+                  value={form.message}
+                  onChange={set("message")}
+                  placeholder="Descrivi la tua richiesta..."
+                />
+              </div>
+
+              <div>
+                <label className={labelClass}>
+                  Allega un file (foto di riferimento, schema...)
+                </label>
+
+                <label className="mt-3 inline-flex items-center gap-3 rounded-2xl border border-border/70 bg-white px-5 py-3 text-muted-foreground shadow-sm cursor-pointer hover:bg-secondary/40">
+                  <Upload className="w-5 h-5" />
+                  <span>{form.fileName || "Scegli file"}</span>
+                  <input
+                    type="file"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      setForm((f) => ({ ...f, fileName: file.name }));
+                    }}
+                  />
+                </label>
+              </div>
+
+              <div className="space-y-3 pt-2">
+                <label className="flex items-start gap-3 cursor-pointer text-muted-foreground">
+                  <input
+                    type="checkbox"
+                    checked={acceptedPrivacy}
+                    onChange={(e) => setAcceptedPrivacy(e.target.checked)}
+                    className="mt-1 w-5 h-5"
+                  />
+                  <span>
+                    Ho letto e accetto la{" "}
+                    <a href="#/PrivacyPolicy" className="text-primary underline">
+                      Privacy Policy
+                    </a>{" "}
+                    *
+                  </span>
+                </label>
+
+                <label className="flex items-start gap-3 cursor-pointer text-muted-foreground">
+                  <input
+                    type="checkbox"
+                    checked={acceptedTerms}
+                    onChange={(e) => setAcceptedTerms(e.target.checked)}
+                    className="mt-1 w-5 h-5"
+                  />
+                  <span>
+                    Ho letto e accetto i{" "}
+                    <a href="#/TerminiCondizioni" className="text-primary underline">
+                      Termini e Condizioni di Vendita
+                    </a>{" "}
+                    *
+                  </span>
+                </label>
+              </div>
+
+              <Button
+                className="w-full rounded-full bg-primary hover:bg-primary/90 py-7 text-lg shadow-md"
+                onClick={handleSubmit}
+                disabled={sending || !acceptedPrivacy || !acceptedTerms}
+              >
+                <Send className="w-5 h-5 mr-3" />
+                {sending ? "Invio in corso..." : "Invia Messaggio"}
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
