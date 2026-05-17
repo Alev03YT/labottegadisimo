@@ -257,15 +257,14 @@ export default function Catalog() {
                     )}
 
                     <Link to={`/Contacts?product=${encodeURIComponent(product.name)}`}>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="w-full rounded-full text-xs border-primary/30 hover:bg-primary hover:text-primary-foreground"
-                      >
-                        <MessageSquare className="w-3 h-3 mr-1" />
-                        Richiedi Preventivo
-                      </Button>
-                    </Link>
+  <Button
+    size="sm"
+    variant="outline"
+    className="w-full rounded-full text-xs border-primary/30 hover:bg-primary hover:text-primary-foreground"
+  >
+    Richiedi Preventivo
+  </Button>
+</Link>
                   </div>
                 </motion.div>
               );
