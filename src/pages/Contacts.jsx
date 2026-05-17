@@ -29,7 +29,7 @@ const EMPTY = {
 };
 
 export default function Contacts() {
-  const urlParams = new URLSearchParams(window.location.search);
+  const urlParams = new URLSearchParams(window.location.hash.split("?")[1] || window.location.search);
   const productFromUrl = urlParams.get("product") || "";
 
   const [form, setForm] = useState({
@@ -42,6 +42,16 @@ export default function Contacts() {
   const [sending, setSending] = useState(false);
   const [acceptedPrivacy, setAcceptedPrivacy] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
+
+  useEffect(() => {
+    if (productFromUrl) {
+      setForm((f) => ({
+        ...f,
+        articleName: productFromUrl,
+        requestType: "Preventivo",
+      }));
+    }
+  }, [productFromUrl]);
 
   useEffect(() => {
     const loadOptions = async () => {
@@ -64,9 +74,9 @@ export default function Contacts() {
   };
 
   const fieldClass =
-    "w-full mt-2 rounded-2xl border border-border/70 bg-white px-4 py-4 text-base outline-none shadow-sm focus:border-primary focus:ring-2 focus:ring-primary/20";
+    "w-full mt-2 rounded-2xl border border-border/70 bg-white px-4 py-3 text-[16px] outline-none shadow-sm focus:border-primary focus:ring-2 focus:ring-primary/20";
 
-  const labelClass = "text-base font-semibold text-foreground";
+  const labelClass = "text-[15px] font-semibold text-foreground";
 
   const handleSubmit = async () => {
     if (!form.requestType || !form.name || !form.email) {
@@ -107,34 +117,34 @@ export default function Contacts() {
 
   return (
     <div className="bg-[#fbf7f5]">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16">
-        <div className="mb-10">
-          <span className="text-sm font-semibold uppercase tracking-[0.35em] text-primary mb-4 block">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-14">
+        <div className="mb-8">
+          <span className="text-xs font-semibold uppercase tracking-[0.3em] text-primary mb-3 block">
             SCRIVICI
           </span>
 
-          <h1 className="font-heading text-5xl md:text-6xl font-bold text-foreground mb-4">
+          <h1 className="font-heading text-4xl md:text-5xl font-bold text-foreground mb-3">
             Contatti
           </h1>
 
-          <p className="text-muted-foreground text-xl leading-relaxed">
+          <p className="text-muted-foreground text-lg leading-relaxed">
             Hai una domanda o vuoi un preventivo? Siamo qui!
           </p>
         </div>
 
-        <div className="space-y-10">
-          <div className="bg-white border border-border/50 rounded-[2rem] p-7 md:p-10 shadow-sm">
-            <h3 className="font-heading text-3xl font-bold mb-8">
+        <div className="space-y-8">
+          <div className="bg-white border border-border/50 rounded-3xl p-6 md:p-8 shadow-sm">
+            <h3 className="font-heading text-2xl md:text-3xl font-bold mb-6">
               Contattaci
             </h3>
 
-            <div className="space-y-6">
+            <div className="space-y-5">
               <a
                 href="mailto:info@labottegadisimo.it"
-                className="flex items-center gap-5 text-lg text-muted-foreground hover:text-foreground transition-colors"
+                className="flex items-center gap-4 text-base text-muted-foreground hover:text-foreground transition-colors break-all"
               >
-                <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                  <Mail className="w-6 h-6 text-primary" />
+                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                  <Mail className="w-5 h-5 text-primary" />
                 </div>
                 <span>info@labottegadisimo.it</span>
               </a>
@@ -143,22 +153,22 @@ export default function Contacts() {
                 href="https://wa.me/393477922931"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-5 text-lg text-muted-foreground hover:text-foreground transition-colors"
+                className="flex items-center gap-4 text-base text-muted-foreground hover:text-foreground transition-colors"
               >
-                <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                  <MessageCircle className="w-6 h-6 text-primary" />
+                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                  <MessageCircle className="w-5 h-5 text-primary" />
                 </div>
                 <span>347-7922931 (WhatsApp)</span>
               </a>
             </div>
           </div>
 
-          <div className="bg-white border border-border/50 rounded-[2rem] p-7 md:p-10 shadow-sm">
-            <h3 className="font-heading text-3xl font-bold mb-8">
+          <div className="bg-white border border-border/50 rounded-3xl p-6 md:p-8 shadow-sm">
+            <h3 className="font-heading text-2xl md:text-3xl font-bold mb-6">
               Informazioni / Preventivo
             </h3>
 
-            <div className="space-y-7">
+            <div className="space-y-5">
               <div>
                 <label className={labelClass}>Tipo di richiesta *</label>
                 <select
@@ -325,7 +335,7 @@ export default function Contacts() {
               <div>
                 <label className={labelClass}>Messaggio</label>
                 <textarea
-                  className={`${fieldClass} min-h-[140px] resize-none`}
+                  className={`${fieldClass} min-h-[120px] resize-none`}
                   rows={4}
                   value={form.message}
                   onChange={set("message")}
@@ -338,7 +348,7 @@ export default function Contacts() {
                   Allega un file (foto di riferimento, schema...)
                 </label>
 
-                <label className="mt-3 inline-flex items-center gap-3 rounded-2xl border border-border/70 bg-white px-5 py-3 text-muted-foreground shadow-sm cursor-pointer hover:bg-secondary/40">
+                <label className="mt-3 inline-flex items-center gap-3 rounded-2xl border border-border/70 bg-white px-5 py-3 text-[16px] text-muted-foreground shadow-sm cursor-pointer hover:bg-secondary/40">
                   <Upload className="w-5 h-5" />
                   <span>{form.fileName || "Scegli file"}</span>
                   <input
@@ -354,7 +364,7 @@ export default function Contacts() {
               </div>
 
               <div className="space-y-3 pt-2">
-                <label className="flex items-start gap-3 cursor-pointer text-muted-foreground">
+                <label className="flex items-start gap-3 cursor-pointer text-sm text-muted-foreground">
                   <input
                     type="checkbox"
                     checked={acceptedPrivacy}
@@ -370,7 +380,7 @@ export default function Contacts() {
                   </span>
                 </label>
 
-                <label className="flex items-start gap-3 cursor-pointer text-muted-foreground">
+                <label className="flex items-start gap-3 cursor-pointer text-sm text-muted-foreground">
                   <input
                     type="checkbox"
                     checked={acceptedTerms}
@@ -388,7 +398,7 @@ export default function Contacts() {
               </div>
 
               <Button
-                className="w-full rounded-full bg-primary hover:bg-primary/90 py-7 text-lg shadow-md"
+                className="w-full rounded-full bg-primary hover:bg-primary/90 py-6 text-base shadow-md"
                 onClick={handleSubmit}
                 disabled={sending || !acceptedPrivacy || !acceptedTerms}
               >
