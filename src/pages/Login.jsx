@@ -16,6 +16,9 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const inputClass =
+    "border rounded-xl px-4 py-3 w-full text-[16px] outline-none focus:border-primary focus:ring-2 focus:ring-primary/20";
+
   const submit = async (e) => {
     e.preventDefault();
 
@@ -46,7 +49,7 @@ export default function Login() {
   };
 
   return (
-    <div className="max-w-md mx-auto px-4 py-16">
+    <div className="max-w-md mx-auto px-4 py-12 overflow-x-hidden">
       <h1 className="font-heading text-3xl font-bold mb-6">
         {mode === "login" ? "Accedi" : "Registrati"}
       </h1>
@@ -54,7 +57,7 @@ export default function Login() {
       <form onSubmit={submit} className="space-y-3">
         {mode === "register" && (
           <input
-            className="border rounded-xl p-3 w-full"
+            className={inputClass}
             placeholder="Nome"
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -63,7 +66,7 @@ export default function Login() {
         )}
 
         <input
-          className="border rounded-xl p-3 w-full"
+          className={inputClass}
           placeholder="Email"
           type="email"
           value={email}
@@ -72,7 +75,7 @@ export default function Login() {
         />
 
         <input
-          className="border rounded-xl p-3 w-full"
+          className={inputClass}
           placeholder="Password"
           type="password"
           value={password}
@@ -80,13 +83,13 @@ export default function Login() {
           required
         />
 
-        <Button className="w-full rounded-full" type="submit">
+        <Button className="w-full rounded-full py-6 text-[16px]" type="submit">
           {mode === "login" ? "Accedi" : "Registrati"}
         </Button>
       </form>
 
       <button
-        className="mt-4 text-sm text-primary underline"
+        className="mt-4 text-[16px] text-primary underline"
         onClick={() => setMode(mode === "login" ? "register" : "login")}
       >
         {mode === "login"
