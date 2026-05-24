@@ -15,7 +15,11 @@ export default function Shop() {
         ...doc.data()
       }));
 
-      setProducts(data);
+      setProducts(
+  data.filter(
+    (p) => p.available === true || p.available === "true"
+  )
+);
     };
 
     load();
