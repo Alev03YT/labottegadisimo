@@ -116,13 +116,22 @@ export default function Catalog() {
         </span>
 
         <h1 className="font-heading text-3xl md:text-4xl font-bold text-foreground">
-          Il Nostro Catalogo
-        </h1>
+  Il Nostro Catalogo
+</h1>
 
-        <p className="text-muted-foreground text-sm mt-2">
-          Sfoglia le nostre creazioni. Per acquistare un articolo disponibile vai allo{' '}
-          <Link to="/Shop" className="text-primary underline">Shop</Link>.
-        </p>
+<p className="text-muted-foreground text-sm mt-2">
+  Sfoglia le creazioni realizzabili su richiesta. Per acquistare articoli in pronta consegna vai allo{' '}
+  <Link to="/Shop" className="text-primary underline">Shop</Link>.
+</p>
+
+<Link to="/Materials">
+  <Button
+    variant="outline"
+    className="mt-4 rounded-full border-primary/30 text-primary hover:bg-primary hover:text-primary-foreground"
+  >
+    Guarda colori e materiali
+  </Button>
+</Link>
       </div>
 
       <div className="flex flex-col sm:flex-row gap-3 mb-6">
