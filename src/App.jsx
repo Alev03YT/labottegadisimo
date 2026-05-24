@@ -20,6 +20,7 @@ import TerminiCondizioni from './pages/TerminiCondizioni';
 import Favorites from './pages/Favorites';
 import Login from './pages/Login';
 import ScrollToTop from "@/components/ScrollToTop";
+import Materials from './pages/Materials';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -57,6 +58,7 @@ const AuthenticatedApp = () => {
         <Route path="/TerminiCondizioni" element={<TerminiCondizioni />} />
         <Route path="/Favorites" element={<Favorites />} />
         <Route path="/Login" element={<Login />} />
+        <Route path="/Materials" element={<Materials />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
