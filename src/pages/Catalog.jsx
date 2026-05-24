@@ -81,6 +81,10 @@ export default function Catalog() {
 
   const filtered = useMemo(() => {
     let result = products.filter((p) => {
+  const isAvailable =
+    p.available === true || p.available === "true";
+
+  if (isAvailable) return false;
       const categoryMatch =
         activeCategory === 'all' ||
         p.category === activeCategory ||
