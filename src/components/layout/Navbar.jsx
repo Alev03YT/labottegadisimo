@@ -46,6 +46,7 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
     { label: 'I Miei Ordini', path: '/Orders' },
     { label: 'Admin', path: '/Admin', adminOnly: true },
     { label: 'Preferiti', path: '/Favorites' },
+    { label: 'Colori e Materiali', path: '/Materials' },
   ];
 
   const navLinks = allNavLinks.filter(l => !l.adminOnly || (isAdmin === true));
