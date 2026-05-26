@@ -127,6 +127,35 @@ export default function Admin() {
     setPayments(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
   };
 
+const resizeImage = (file, maxWidth = 900, quality = 0.7) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = (event) => {
+      const img = new Image();
+
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const scale = Math.min(maxWidth / img.width, 1);
+
+        canvas.width = img.width * scale;
+        canvas.height = img.height * scale;
+
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        resolve(canvas.toDataURL("image/jpeg", quality));
+      };
+
+      img.onerror = reject;
+      img.src = event.target.result;
+    };
+
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+};
+  
 const addProduct = async () => {
   try {
     if (!product.name || !product.price || !productImage) {
@@ -134,15 +163,7 @@ const addProduct = async () => {
       return;
     }
 
-    const imageUrl = await new Promise((resolve) => {
-      const reader = new FileReader();
-
-      reader.onloadend = () => {
-        resolve(reader.result);
-      };
-
-      reader.readAsDataURL(productImage);
-    });
+    const imageUrl = await resizeImage(productImage, 900, 0.7);
 
     await addDoc(collection(db, "products"), {
       ...product,
