@@ -37,6 +37,7 @@ export default function Admin() {
   const [orders, setOrders] = useState([]);
   const [requests, setRequests] = useState([]);
   const [colors, setColors] = useState([]);
+  const [activeColorType, setActiveColorType] = useState("filato");
   const [shipping, setShipping] = useState([]);
   const [payments, setPayments] = useState([]);
 
@@ -101,10 +102,21 @@ export default function Admin() {
   };
 
   const loadColors = async () => {
-    const snap = await getDocs(collection(db, "colors"));
-    setColors(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
-  };
+  const snap = await getDocs(collection(db, "colors"));
 
+  const data = snap.docs.map((d) => ({
+    id: d.id,
+    ...d.data(),
+  }));
+
+  data.sort((a, b) => {
+    const orderA = a.order ?? 999999;
+    const orderB = b.order ?? 999999;
+    return orderA - orderB;
+  });
+
+  setColors(data);
+};
   const loadShipping = async () => {
     const snap = await getDocs(collection(db, "shippingMethods"));
     setShipping(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
@@ -196,15 +208,19 @@ const toggleAvailability = async (product) => {
       reader.readAsDataURL(colorImage);
     });
 
+    const sameTypeColors = colors.filter((c) => c.type === colorForm.type);
+    const nextOrder = sameTypeColors.length + 1;
+
     await addDoc(collection(db, "colors"), {
       ...colorForm,
       image: imageUrl,
+      order: nextOrder,
       createdAt: serverTimestamp(),
     });
 
     setColorForm({
       name: "",
-      type: "filato",
+      type: activeColorType,
     });
 
     setColorImage(null);
@@ -223,6 +239,30 @@ const toggleAvailability = async (product) => {
     await loadColors();
   };
 
+const moveColor = async (color, direction) => {
+  const sameTypeColors = colors
+    .filter((c) => c.type === color.type)
+    .sort((a, b) => (a.order ?? 999999) - (b.order ?? 999999));
+
+  const index = sameTypeColors.findIndex((c) => c.id === color.id);
+  const swapIndex = direction === "up" ? index - 1 : index + 1;
+
+  if (swapIndex < 0 || swapIndex >= sameTypeColors.length) return;
+
+  const current = sameTypeColors[index];
+  const target = sameTypeColors[swapIndex];
+
+  await updateDoc(doc(db, "colors", current.id), {
+    order: target.order ?? swapIndex + 1,
+  });
+
+  await updateDoc(doc(db, "colors", target.id), {
+    order: current.order ?? index + 1,
+  });
+
+  await loadColors();
+};
+  
   const addShipping = async () => {
     if (!shippingForm.name || !shippingForm.price) return;
 
@@ -288,60 +328,114 @@ const toggleAvailability = async (product) => {
         </aside>
 
         <main>
-          {activeTab === "products" && (
-            <section className="bg-white rounded-2xl shadow p-5">
-              <h2 className="text-xl font-bold mb-4">Prodotti</h2>
+          {activeTab === "colors" && (
+  <section className="bg-white rounded-2xl shadow p-5">
+    <h2 className="text-xl font-bold mb-4">
+      Colori filato, pelle e minuteria
+    </h2>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6">
-                <input className="border p-2 rounded" placeholder="Nome prodotto" value={product.name} onChange={(e) => setProduct({ ...product, name: e.target.value })} />
-                <input className="border p-2 rounded" placeholder="Prezzo" value={product.price} onChange={(e) => setProduct({ ...product, price: e.target.value })} />
-                <input className="border p-2 rounded" placeholder="Quantità" value={product.quantity} onChange={(e) => setProduct({ ...product, quantity: e.target.value })} />
+    <div className="flex gap-2 mb-4 flex-wrap">
+      {[
+        ["filato", "Filato"],
+        ["pelle", "Pelle"],
+        ["minuteria", "Minuteria"],
+      ].map(([key, label]) => (
+        <button
+          key={key}
+          onClick={() => {
+            setActiveColorType(key);
+            setColorForm({ ...colorForm, type: key });
+          }}
+          className={`px-4 py-2 rounded-full text-sm ${
+            activeColorType === key
+              ? "bg-black text-white"
+              : "bg-secondary hover:bg-secondary/70"
+          }`}
+        >
+          {label}
+        </button>
+      ))}
+    </div>
 
-                <select className="border p-2 rounded" value={product.category} onChange={(e) => setProduct({ ...product, category: e.target.value })}>
-                  {categories.map((c) => <option key={c}>{c}</option>)}
-                </select>
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+      <input
+        className="border p-2 rounded"
+        placeholder="Nome colore"
+        value={colorForm.name}
+        onChange={(e) =>
+          setColorForm({ ...colorForm, name: e.target.value })
+        }
+      />
 
-                <input className="border p-2 rounded" placeholder="Materiale" value={product.material} onChange={(e) => setProduct({ ...product, material: e.target.value })} />
-                <input className="border p-2 rounded" placeholder="Colore" value={product.color} onChange={(e) => setProduct({ ...product, color: e.target.value })} />
-                <input className="border p-2 rounded" placeholder="Dimensioni" value={product.dimensions} onChange={(e) => setProduct({ ...product, dimensions: e.target.value })} />
-                <input className="border p-2 rounded" placeholder="Misura borsa" value={product.bagSize} onChange={(e) => setProduct({ ...product, bagSize: e.target.value })} />
+      <select
+        className="border p-2 rounded"
+        value={colorForm.type}
+        onChange={(e) => {
+          setColorForm({ ...colorForm, type: e.target.value });
+          setActiveColorType(e.target.value);
+        }}
+      >
+        <option value="filato">Colori filato</option>
+        <option value="pelle">Pelle</option>
+        <option value="minuteria">Minuteria</option>
+      </select>
 
-                <label className="flex items-center gap-2">
-                  <input type="checkbox" checked={product.available} onChange={(e) => setProduct({ ...product, available: e.target.checked })} />
-                  Disponibile
-                </label>
+      <input
+        type="file"
+        accept="image/*"
+        onChange={(e) => setColorImage(e.target.files[0])}
+      />
+    </div>
 
-                <input type="file" accept="image/*" onChange={(e) => setProductImage(e.target.files[0])} />
-              </div>
+    <button
+      onClick={addColor}
+      className="bg-black text-white px-5 py-2 rounded-xl mb-6"
+    >
+      Aggiungi colore
+    </button>
 
-              <button onClick={addProduct} className="bg-black text-white px-5 py-2 rounded-xl mb-6">
-                Aggiungi prodotto
+    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+      {colors
+        .filter((c) => c.type === activeColorType)
+        .sort((a, b) => (a.order ?? 999999) - (b.order ?? 999999))
+        .map((c) => (
+          <div key={c.id} className="border rounded-xl p-3">
+            <img
+              src={c.image}
+              alt={c.name}
+              className="w-full h-24 object-cover rounded-xl mb-2"
+            />
+
+            <p className="font-semibold text-sm">{c.name}</p>
+            <p className="text-xs text-muted-foreground">{c.type}</p>
+
+            <div className="flex gap-2 mt-3">
+              <button
+                onClick={() => moveColor(c, "up")}
+                className="flex-1 border rounded-lg py-1 text-xs"
+              >
+                ↑
               </button>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {products.map((p) => (
-                  <div key={p.id} className="border rounded-xl p-3">
-                    <img src={p.image_url} alt={p.name} className="w-full h-40 object-cover rounded-xl mb-2" />
-                    <h3 className="font-semibold">{p.name}</h3>
-                    <p>{p.price}€</p>
-                    <p className="text-sm text-muted-foreground">{p.category}</p>
-                    <p className="text-sm">{p.available ? "Disponibile" : "Non disponibile"}</p>
-                    <button
-  onClick={() => toggleAvailability(p)}
-  className="mt-2 w-full bg-black text-white rounded-xl py-2 text-sm"
->
-  {p.available
-    ? "Segna come non disponibile"
-    : "Segna come disponibile"}
-</button>
-                    <button onClick={() => deleteProduct(p.id)} className="text-red-600 text-sm mt-2">
-                      Elimina
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
+              <button
+                onClick={() => moveColor(c, "down")}
+                className="flex-1 border rounded-lg py-1 text-xs"
+              >
+                ↓
+              </button>
+            </div>
+
+            <button
+              onClick={() => deleteColor(c.id)}
+              className="text-red-600 text-sm mt-2"
+            >
+              Elimina
+            </button>
+          </div>
+        ))}
+    </div>
+  </section>
+)}
 
           {activeTab === "orders" && (
             <section className="bg-white rounded-2xl shadow p-5">
