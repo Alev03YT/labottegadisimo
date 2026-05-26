@@ -261,6 +261,24 @@ const toggleAvailability = async (product) => {
   };
 
 const moveColor = async (color, direction) => {
+  const normalizeColorOrder = async () => {
+  const grouped = ["filato", "pelle", "minuteria"];
+
+  for (const type of grouped) {
+    const sameTypeColors = colors
+      .filter((c) => c.type === type)
+      .sort((a, b) => (a.order ?? 999999) - (b.order ?? 999999));
+
+    for (let i = 0; i < sameTypeColors.length; i++) {
+      await updateDoc(doc(db, "colors", sameTypeColors[i].id), {
+        order: i + 1,
+      });
+    }
+  }
+
+  await loadColors();
+  alert("Ordine colori sistemato.");
+};
   const sameTypeColors = colors
     .filter((c) => c.type === color.type)
     .sort((a, b) => (a.order ?? 999999) - (b.order ?? 999999));
@@ -401,11 +419,15 @@ const moveColor = async (color, direction) => {
         <option value="minuteria">Minuteria</option>
       </select>
 
-      <input
-        type="file"
-        accept="image/*"
-        onChange={(e) => setColorImage(e.target.files[0])}
-      />
+      <label className="border p-2 rounded cursor-pointer text-sm bg-white">
+  {colorImage ? colorImage.name : "Scegli foto"}
+  <input
+    type="file"
+    accept="image/*"
+    className="hidden"
+    onChange={(e) => setColorImage(e.target.files?.[0] || null)}
+  />
+</label>
     </div>
 
     <button
@@ -414,6 +436,13 @@ const moveColor = async (color, direction) => {
     >
       Aggiungi colore
     </button>
+
+    <button
+  onClick={normalizeColorOrder}
+  className="ml-2 border px-5 py-2 rounded-xl mb-6"
+>
+  Sistema ordine colori
+</button>
 
     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
       {colors
