@@ -260,7 +260,6 @@ const toggleAvailability = async (product) => {
     await loadColors();
   };
 
-const moveColor = async (color, direction) => {
 const normalizeColorOrder = async () => {
   const grouped = ["filato", "pelle", "minuteria"];
 
