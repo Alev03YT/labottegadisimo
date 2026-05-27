@@ -261,7 +261,7 @@ const toggleAvailability = async (product) => {
   };
 
 const moveColor = async (color, direction) => {
-  const normalizeColorOrder = async () => {
+const normalizeColorOrder = async () => {
   const grouped = ["filato", "pelle", "minuteria"];
 
   for (const type of grouped) {
@@ -279,6 +279,8 @@ const moveColor = async (color, direction) => {
   await loadColors();
   alert("Ordine colori sistemato.");
 };
+
+const moveColor = async (color, direction) => {
   const sameTypeColors = colors
     .filter((c) => c.type === color.type)
     .sort((a, b) => (a.order ?? 999999) - (b.order ?? 999999));
@@ -367,6 +369,142 @@ const moveColor = async (color, direction) => {
         </aside>
 
         <main>
+          {activeTab === "products" && (
+  <section className="bg-white rounded-2xl shadow p-5">
+    <h2 className="text-xl font-bold mb-4">Prodotti</h2>
+
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6">
+      <input
+        className="border p-2 rounded"
+        placeholder="Nome prodotto"
+        value={product.name}
+        onChange={(e) => setProduct({ ...product, name: e.target.value })}
+      />
+
+      <input
+        className="border p-2 rounded"
+        placeholder="Prezzo"
+        value={product.price}
+        onChange={(e) => setProduct({ ...product, price: e.target.value })}
+      />
+
+      <input
+        className="border p-2 rounded"
+        placeholder="Quantità"
+        value={product.quantity}
+        onChange={(e) => setProduct({ ...product, quantity: e.target.value })}
+      />
+
+      <select
+        className="border p-2 rounded"
+        value={product.category}
+        onChange={(e) => setProduct({ ...product, category: e.target.value })}
+      >
+        {categories.map((c) => (
+          <option key={c}>{c}</option>
+        ))}
+      </select>
+
+      <input
+        className="border p-2 rounded"
+        placeholder="Materiale"
+        value={product.material}
+        onChange={(e) => setProduct({ ...product, material: e.target.value })}
+      />
+
+      <input
+        className="border p-2 rounded"
+        placeholder="Colore"
+        value={product.color}
+        onChange={(e) => setProduct({ ...product, color: e.target.value })}
+      />
+
+      <input
+        className="border p-2 rounded"
+        placeholder="Dimensioni"
+        value={product.dimensions}
+        onChange={(e) => setProduct({ ...product, dimensions: e.target.value })}
+      />
+
+      <input
+        className="border p-2 rounded"
+        placeholder="Misura borsa"
+        value={product.bagSize}
+        onChange={(e) => setProduct({ ...product, bagSize: e.target.value })}
+      />
+
+      <label className="flex items-center gap-2">
+        <input
+          type="checkbox"
+          checked={product.available}
+          onChange={(e) =>
+            setProduct({ ...product, available: e.target.checked })
+          }
+        />
+        Disponibile / pronta consegna
+      </label>
+
+      <label className="border p-2 rounded cursor-pointer text-sm bg-white">
+        {productImage ? productImage.name : "Scegli foto prodotto"}
+        <input
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={(e) => setProductImage(e.target.files?.[0] || null)}
+        />
+      </label>
+    </div>
+
+    <button
+      onClick={addProduct}
+      className="bg-black text-white px-5 py-2 rounded-xl mb-6"
+    >
+      Aggiungi prodotto
+    </button>
+
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {products.map((p) => (
+        <div key={p.id} className="border rounded-xl p-3">
+          {p.image_url ? (
+            <img
+              src={p.image_url}
+              alt={p.name}
+              className="w-full h-40 object-cover rounded-xl mb-2"
+            />
+          ) : (
+            <div className="w-full h-40 bg-secondary rounded-xl mb-2 flex items-center justify-center text-sm text-muted-foreground">
+              Nessuna foto
+            </div>
+          )}
+
+          <h3 className="font-semibold">{p.name}</h3>
+          <p>{p.price}€</p>
+          <p className="text-sm text-muted-foreground">{p.category}</p>
+
+          <p className="text-sm">
+            {p.available ? "Pronta consegna / Shop" : "Su richiesta / Catalogo"}
+          </p>
+
+          <button
+            onClick={() => toggleAvailability(p)}
+            className="mt-2 w-full bg-black text-white rounded-xl py-2 text-sm"
+          >
+            {p.available
+              ? "Sposta nel catalogo"
+              : "Sposta nello shop"}
+          </button>
+
+          <button
+            onClick={() => deleteProduct(p.id)}
+            className="text-red-600 text-sm mt-2"
+          >
+            Elimina
+          </button>
+        </div>
+      ))}
+    </div>
+  </section>
+)}
           {activeTab === "colors" && (
   <section className="bg-white rounded-2xl shadow p-5">
     <h2 className="text-xl font-bold mb-4">
@@ -450,11 +588,17 @@ const moveColor = async (color, direction) => {
         .sort((a, b) => (a.order ?? 999999) - (b.order ?? 999999))
         .map((c) => (
           <div key={c.id} className="border rounded-xl p-3">
-            <img
-              src={c.image}
-              alt={c.name}
-              className="w-full h-24 object-cover rounded-xl mb-2"
-            />
+            {c.image ? (
+  <img
+    src={c.image}
+    alt={c.name}
+    className="w-full h-24 object-cover rounded-xl mb-2"
+  />
+) : (
+  <div className="w-full h-24 bg-secondary rounded-xl mb-2 flex items-center justify-center text-xs text-muted-foreground">
+    Nessuna foto
+  </div>
+)}
 
             <p className="font-semibold text-sm">{c.name}</p>
             <p className="text-xs text-muted-foreground">{c.type}</p>
@@ -530,45 +674,6 @@ const moveColor = async (color, direction) => {
                     <p><b>Taglia:</b> {r.size}</p>
                     <p><b>Misura:</b> {r.measureCm}</p>
                     <p><b>Messaggio:</b> {r.message}</p>
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
-
-          {activeTab === "colors" && (
-            <section className="bg-white rounded-2xl shadow p-5">
-              <h2 className="text-xl font-bold mb-4">Colori filato, pelle e minuteria</h2>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
-                <input className="border p-2 rounded" placeholder="Nome colore" value={colorForm.name} onChange={(e) => setColorForm({ ...colorForm, name: e.target.value })} />
-
-                <select
-  className="border p-2 rounded"
-  value={colorForm.type}
-  onChange={(e) => setColorForm({ ...colorForm, type: e.target.value })}
->
-  <option value="filato">Colori filato</option>
-  <option value="pelle">Pelle</option>
-  <option value="minuteria">Minuteria</option>
-</select>
-
-                <input type="file" accept="image/*" onChange={(e) => setColorImage(e.target.files[0])} />
-              </div>
-
-              <button onClick={addColor} className="bg-black text-white px-5 py-2 rounded-xl mb-6">
-                Aggiungi colore
-              </button>
-
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {colors.map((c) => (
-                  <div key={c.id} className="border rounded-xl p-3">
-                    <img src={c.image} alt={c.name} className="w-full h-24 object-cover rounded-xl mb-2" />
-                    <p className="font-semibold">{c.name}</p>
-                    <p className="text-sm">{c.type}</p>
-                    <button onClick={() => deleteColor(c.id)} className="text-red-600 text-sm">
-                      Elimina
-                    </button>
                   </div>
                 ))}
               </div>
