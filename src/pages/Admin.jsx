@@ -54,7 +54,7 @@ export default function Admin() {
   });
 
   const [productImage, setProductImage] = useState(null);
-
+  const [editingProductId, setEditingProductId] = useState(null);
   const [colorForm, setColorForm] = useState({
     name: "",
     type: "filato",
@@ -193,6 +193,80 @@ const addProduct = async () => {
   } catch (err) {
     console.error(err);
     alert("Errore nel salvataggio prodotto.");
+  }
+};
+
+const startEditProduct = (p) => {
+  setEditingProductId(p.id);
+
+  setProduct({
+    name: p.name || "",
+    price: p.price || "",
+    quantity: p.quantity || "",
+    category: p.category || "Borsa",
+    material: p.material || "",
+    color: p.color || "",
+    dimensions: p.dimensions || "",
+    bagSize: p.bagSize || "",
+    available: p.available === true || p.available === "true",
+    image_url: p.image_url || "",
+  });
+
+  setProductImage(null);
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
+};
+
+const saveProductChanges = async () => {
+  try {
+    if (!editingProductId) return;
+
+    if (!product.name || !product.price) {
+      alert("Inserisci nome e prezzo.");
+      return;
+    }
+
+    let imageUrl = product.image_url || "";
+
+    if (productImage) {
+      imageUrl = await resizeImage(productImage, 900, 0.7);
+    }
+
+    await updateDoc(doc(db, "products", editingProductId), {
+      name: product.name,
+      price: Number(product.price),
+      quantity: Number(product.quantity || 0),
+      category: product.category,
+      material: product.material,
+      color: product.color,
+      dimensions: product.dimensions,
+      bagSize: product.bagSize,
+      available: product.available,
+      image_url: imageUrl,
+    });
+
+    setEditingProductId(null);
+
+    setProduct({
+      name: "",
+      price: "",
+      quantity: "",
+      category: "Borsa",
+      material: "",
+      color: "",
+      dimensions: "",
+      bagSize: "",
+      available: true,
+    });
+
+    setProductImage(null);
+
+    await loadProducts();
+
+    alert("Prodotto modificato.");
+  } catch (err) {
+    console.error(err);
+    alert("Errore nella modifica prodotto.");
   }
 };
 
@@ -454,12 +528,38 @@ const moveColor = async (color, direction) => {
       </label>
     </div>
 
+    <div className="flex gap-2 mb-6">
+  <button
+    onClick={editingProductId ? saveProductChanges : addProduct}
+    className="bg-black text-white px-5 py-2 rounded-xl"
+  >
+    {editingProductId ? "Salva modifiche" : "Aggiungi prodotto"}
+  </button>
+
+  {editingProductId && (
     <button
-      onClick={addProduct}
-      className="bg-black text-white px-5 py-2 rounded-xl mb-6"
+      onClick={() => {
+        setEditingProductId(null);
+        setProduct({
+          name: "",
+          price: "",
+          quantity: "",
+          category: "Borsa",
+          material: "",
+          color: "",
+          dimensions: "",
+          bagSize: "",
+          available: true,
+          image_url: "",
+        });
+        setProductImage(null);
+      }}
+      className="border px-5 py-2 rounded-xl"
     >
-      Aggiungi prodotto
+      Annulla
     </button>
+  )}
+</div>
 
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
       {products.map((p) => (
@@ -492,7 +592,12 @@ const moveColor = async (color, direction) => {
               ? "Sposta nel catalogo"
               : "Sposta nello shop"}
           </button>
-
+<button
+  onClick={() => startEditProduct(p)}
+  className="mt-2 w-full border rounded-xl py-2 text-sm"
+>
+  Modifica
+</button>
           <button
             onClick={() => deleteProduct(p.id)}
             className="text-red-600 text-sm mt-2"
