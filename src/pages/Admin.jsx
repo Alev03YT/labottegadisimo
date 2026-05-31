@@ -375,6 +375,26 @@ const moveColor = async (color, direction) => {
     .filter((c) => c.type === color.type)
     .sort((a, b) => (a.order ?? 999999) - (b.order ?? 999999));
 
+  const handleColorDragEnd = async (result) => {
+  if (!result.destination) return;
+
+  const sameTypeColors = colors
+    .filter((c) => c.type === activeColorType)
+    .sort((a, b) => (a.order ?? 999999) - (b.order ?? 999999));
+
+  const reordered = Array.from(sameTypeColors);
+  const [movedItem] = reordered.splice(result.source.index, 1);
+  reordered.splice(result.destination.index, 0, movedItem);
+
+  for (let i = 0; i < reordered.length; i++) {
+    await updateDoc(doc(db, "colors", reordered[i].id), {
+      order: i + 1,
+    });
+  }
+
+  await loadColors();
+};
+
   const index = sameTypeColors.findIndex((c) => c.id === color.id);
   const swapIndex = direction === "up" ? index - 1 : index + 1;
 
