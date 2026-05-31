@@ -16,9 +16,9 @@ const categories = [
   "Accessori",
   "Gioielli",
   "Ricamo",
-  "Abbigliamento - Donna",
-  "Abbigliamento - Uomo",
-  "Abbigliamento - Bambino",
+  "Abbigliamento donna",
+  "Abbigliamento uomo",
+  "Abbigliamento bambino",
   "Schema digitale",
 ];
 
