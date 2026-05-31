@@ -10,12 +10,6 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 
-import {
-  DragDropContext,
-  Droppable,
-  Draggable,
-} from "@hello-pangea/dnd";
-
 const categories = [
   "Borsa",
   "Amigurumi",
@@ -375,9 +369,6 @@ const moveColor = async (color, direction) => {
     .filter((c) => c.type === color.type)
     .sort((a, b) => (a.order ?? 999999) - (b.order ?? 999999));
 
-  const handleColorDragEnd = async (result) => {
-  if (!result.destination) return;
-
   const sameTypeColors = colors
     .filter((c) => c.type === activeColorType)
     .sort((a, b) => (a.order ?? 999999) - (b.order ?? 999999));
@@ -723,78 +714,52 @@ const moveColor = async (color, direction) => {
   Sistema ordine colori
 </button>
 
-    <DragDropContext onDragEnd={handleColorDragEnd}>
-  <Droppable droppableId="colors-grid" direction="horizontal">
-    {(provided) => (
-      <div
-        className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4"
-        ref={provided.innerRef}
-        {...provided.droppableProps}
-      >
-        {colors
-          .filter((c) => c.type === activeColorType)
-          .sort((a, b) => (a.order ?? 999999) - (b.order ?? 999999))
-          .map((c, index) => (
-            <Draggable key={c.id} draggableId={c.id} index={index}>
-              {(provided) => (
-                <div
-                  ref={provided.innerRef}
-                  {...provided.draggableProps}
-                  className="border rounded-xl p-3 bg-white"
-                >
-                  <div
-                    {...provided.dragHandleProps}
-                    className="mb-2 cursor-grab active:cursor-grabbing text-xs text-center border rounded-lg py-1 bg-secondary"
-                  >
-                    ☰ Trascina
-                  </div>
+    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+  {colors
+    .filter((c) => c.type === activeColorType)
+    .sort((a, b) => (a.order ?? 999999) - (b.order ?? 999999))
+    .map((c) => (
+      <div key={c.id} className="border rounded-xl p-3">
+        {c.image ? (
+          <img
+            src={c.image}
+            alt={c.name}
+            className="w-full h-24 object-cover rounded-xl mb-2"
+          />
+        ) : (
+          <div className="w-full h-24 bg-secondary rounded-xl mb-2 flex items-center justify-center text-xs text-muted-foreground">
+            Nessuna foto
+          </div>
+        )}
 
-                  {c.image ? (
-                    <img
-                      src={c.image}
-                      alt={c.name}
-                      className="w-full h-24 object-cover rounded-xl mb-2"
-                    />
-                  ) : (
-                    <div className="w-full h-24 bg-secondary rounded-xl mb-2 flex items-center justify-center text-xs text-muted-foreground">
-                      Nessuna foto
-                    </div>
-                  )}
+        <p className="font-semibold text-sm">{c.name}</p>
+        <p className="text-xs text-muted-foreground">{c.type}</p>
 
-                  <p className="font-semibold text-sm">{c.name}</p>
-                  <p className="text-xs text-muted-foreground">{c.type}</p>
+        <div className="flex gap-2 mt-3">
+          <button
+            onClick={() => moveColor(c, "up")}
+            className="flex-1 border rounded-lg py-1 text-xs"
+          >
+            ↑
+          </button>
 
-                  <div className="flex gap-2 mt-3">
-                    <button
-                      onClick={() => moveColor(c, "up")}
-                      className="flex-1 border rounded-lg py-1 text-xs"
-                    >
-                      ↑
-                    </button>
+          <button
+            onClick={() => moveColor(c, "down")}
+            className="flex-1 border rounded-lg py-1 text-xs"
+          >
+            ↓
+          </button>
+        </div>
 
-                    <button
-                      onClick={() => moveColor(c, "down")}
-                      className="flex-1 border rounded-lg py-1 text-xs"
-                    >
-                      ↓
-                    </button>
-                  </div>
-
-                  <button
-                    onClick={() => deleteColor(c.id)}
-                    className="text-red-600 text-sm mt-2"
-                  >
-                    Elimina
-                  </button>
-                </div>
-              )}
-            </Draggable>
-          ))}
-        {provided.placeholder}
+        <button
+          onClick={() => deleteColor(c.id)}
+          className="text-red-600 text-sm mt-2"
+        >
+          Elimina
+        </button>
       </div>
-    )}
-  </Droppable>
-</DragDropContext>
+    ))}
+</div>
   </section>
 )}
 
