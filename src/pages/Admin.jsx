@@ -10,6 +10,12 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 
+import {
+  DragDropContext,
+  Droppable,
+  Draggable,
+} from "@hello-pangea/dnd";
+
 const categories = [
   "Borsa",
   "Amigurumi",
