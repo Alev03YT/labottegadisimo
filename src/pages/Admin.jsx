@@ -790,8 +790,6 @@ const moveColor = async (color, direction) => {
               )}
             </Draggable>
           ))}
-
-        {provided.placeholder}
       </div>
     )}
   </Droppable>
