@@ -226,10 +226,15 @@ const saveProductChanges = async () => {
   try {
     if (!editingProductId) return;
 
-    if (!product.name || !product.price) {
-      alert("Inserisci nome e prezzo.");
-      return;
-    }
+    if (!product.name) {
+  alert("Inserisci il nome.");
+  return;
+}
+
+if (product.available && !product.price) {
+  alert("Per i prodotti in pronta consegna inserisci anche il prezzo.");
+  return;
+}
 
     let imageUrl = product.image_url || "";
 
@@ -262,7 +267,7 @@ const saveProductChanges = async () => {
       dimensions: "",
       bagSize: "",
       available: true,
-      image_url: imageUrl,
+      image_url: "",
     });
 
     setProductImage(null);
