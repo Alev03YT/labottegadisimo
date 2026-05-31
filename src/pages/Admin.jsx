@@ -11,7 +11,7 @@ import {
 } from "firebase/firestore";
 
 const categories = [
-  "Borse",
+  "Borsa",
   "Amigurumi",
   "Accessori",
   "Gioielli",
