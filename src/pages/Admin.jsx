@@ -11,14 +11,14 @@ import {
 } from "firebase/firestore";
 
 const categories = [
-  "Borsa",
+  "Borse",
   "Amigurumi",
   "Accessori",
   "Gioielli",
   "Ricamo",
-  "Abbigliamento donna",
-  "Abbigliamento uomo",
-  "Abbigliamento bambino",
+  "Abbigliamento - Donna",
+  "Abbigliamento - Uomo",
+  "Abbigliamento - Bambino",
   "Schema digitale",
 ];
 
@@ -368,23 +368,6 @@ const moveColor = async (color, direction) => {
   const sameTypeColors = colors
     .filter((c) => c.type === color.type)
     .sort((a, b) => (a.order ?? 999999) - (b.order ?? 999999));
-
-  const sameTypeColors = colors
-    .filter((c) => c.type === activeColorType)
-    .sort((a, b) => (a.order ?? 999999) - (b.order ?? 999999));
-
-  const reordered = Array.from(sameTypeColors);
-  const [movedItem] = reordered.splice(result.source.index, 1);
-  reordered.splice(result.destination.index, 0, movedItem);
-
-  for (let i = 0; i < reordered.length; i++) {
-    await updateDoc(doc(db, "colors", reordered[i].id), {
-      order: i + 1,
-    });
-  }
-
-  await loadColors();
-};
 
   const index = sameTypeColors.findIndex((c) => c.id === color.id);
   const swapIndex = direction === "up" ? index - 1 : index + 1;
