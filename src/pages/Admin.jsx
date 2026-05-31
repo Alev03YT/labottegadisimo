@@ -158,16 +158,21 @@ const resizeImage = (file, maxWidth = 900, quality = 0.7) => {
   
 const addProduct = async () => {
   try {
-    if (!product.name || !product.price || !productImage) {
-      alert("Inserisci nome, prezzo e foto.");
-      return;
-    }
+    if (!product.name || !productImage) {
+  alert("Inserisci nome e foto.");
+  return;
+}
+
+if (product.available && !product.price) {
+  alert("Per i prodotti in pronta consegna inserisci anche il prezzo.");
+  return;
+}
 
     const imageUrl = await resizeImage(productImage, 900, 0.7);
 
     await addDoc(collection(db, "products"), {
       ...product,
-      price: Number(product.price),
+      price: product.price ? Number(product.price) : null,
       quantity: Number(product.quantity || 0),
       image_url: imageUrl,
       createdAt: serverTimestamp(),
@@ -234,7 +239,7 @@ const saveProductChanges = async () => {
 
     await updateDoc(doc(db, "products", editingProductId), {
       name: product.name,
-      price: Number(product.price),
+      price: product.price ? Number(product.price) : null,
       quantity: Number(product.quantity || 0),
       category: product.category,
       material: product.material,
@@ -257,6 +262,7 @@ const saveProductChanges = async () => {
       dimensions: "",
       bagSize: "",
       available: true,
+      image_url: imageUrl,
     });
 
     setProductImage(null);
