@@ -23,6 +23,7 @@ export default function Cart() {
   const [isLoading, setIsLoading] = useState(true);
   const [showCheckout, setShowCheckout] = useState(false);
   const [placingOrder, setPlacingOrder] = useState(false);
+  const [paymentMethods, setPaymentMethods] = useState([]);
 
   const [form, setForm] = useState({
     name: "",
@@ -31,7 +32,7 @@ export default function Cart() {
     phone: "",
     address: "",
     notes: "",
-    paymentMethod: "bonifico",
+    paymentMethod: "",
     shippingMethod: "corriere",
   });
 
@@ -47,6 +48,11 @@ export default function Cart() {
       email: currentUser.email || "",
       name: currentUser.displayName || "",
     }));
+    const loadPaymentMethods = async () => {
+  const snap = await getDocs(collection(db, "paymentMethods"));
+  const data = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+  setPaymentMethods(data);
+};
 
     const q = query(
       collection(db, "cartItems"),
@@ -59,6 +65,7 @@ export default function Cart() {
   };
 
   useEffect(() => {
+    loadPaymentMethods();
     const unsub = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
       await loadCart(currentUser);
@@ -93,6 +100,10 @@ export default function Cart() {
   const shippingCost = form.shippingMethod === "ritiro" ? 0 : 6.9;
   const total = itemsTotal + shippingCost;
 
+const selectedPayment = paymentMethods.find(
+  (p) => p.id === form.paymentMethod || p.name === form.paymentMethod
+);
+  
   const placeOrder = async () => {
     if (!form.name || !form.surname || !form.email || !form.phone || !form.address) {
       alert("Compila tutti i campi obbligatori.");
@@ -112,7 +123,10 @@ export default function Cart() {
         customerPhone: form.phone,
         shippingAddress: form.address,
         notes: form.notes,
-        paymentMethod: form.paymentMethod,
+        paymentMethod: selectedPayment?.name || form.paymentMethod,
+paymentMethodId: selectedPayment?.id || "",
+paymentDetails: selectedPayment?.details || "",
+paymentNotes: selectedPayment?.notes || "",
         shippingMethod: form.shippingMethod,
         shippingCost,
         itemsTotal,
@@ -278,20 +292,68 @@ export default function Cart() {
                   <option value="ritiro">Ritiro / consegna concordata — €0.00</option>
                 </select>
 
-                <select
-  className="border rounded-xl p-3 w-full"
-  value={form.paymentMethod}
-  onChange={(e) => setForm({ ...form, paymentMethod: e.target.value })}
->
-  <option value="bonifico">Bonifico bancario</option>
-</select>
+                <div className="space-y-3">
+  <p className="font-semibold text-sm">Metodo di pagamento</p>
+
+  {paymentMethods.length === 0 ? (
+    <div className="border rounded-xl p-3 text-sm text-muted-foreground">
+      Nessun metodo pagamento disponibile.
+    </div>
+  ) : (
+    paymentMethods.map((payment) => (
+      <label
+        key={payment.id}
+        className={`flex items-start gap-3 border rounded-xl p-3 cursor-pointer ${
+          form.paymentMethod === payment.id
+            ? "border-black bg-white"
+            : "bg-white/60"
+        }`}
+      >
+        <input
+          type="radio"
+          name="paymentMethod"
+          value={payment.id}
+          checked={form.paymentMethod === payment.id}
+          onChange={() =>
+            setForm({ ...form, paymentMethod: payment.id })
+          }
+          className="mt-1"
+        />
+
+        {payment.image && (
+          <img
+            src={payment.image}
+            alt={payment.name}
+            className="w-12 h-12 object-cover rounded-lg border"
+          />
+        )}
+
+        <div className="flex-1">
+          <p className="font-semibold text-sm">{payment.name}</p>
+
+          {payment.details && (
+            <p className="text-xs text-muted-foreground whitespace-pre-line mt-1">
+              {payment.details}
+            </p>
+          )}
+
+          {payment.notes && (
+            <p className="text-xs text-muted-foreground whitespace-pre-line mt-1">
+              {payment.notes}
+            </p>
+          )}
+        </div>
+      </label>
+    ))
+  )}
+</div>
 
                 <div className="flex gap-3 pt-3">
                   <Button variant="outline" className="rounded-full" onClick={() => setShowCheckout(false)}>
                     Indietro
                   </Button>
 
-                  <Button className="flex-1 rounded-full" onClick={placeOrder} disabled={placingOrder}>
+                  <Button className="flex-1 rounded-full" onClick={placeOrder} disabled={placingOrder || !form.paymentMethod}>
                     {placingOrder ? "Creazione ordine..." : "Conferma ordine"}
                   </Button>
                 </div>
