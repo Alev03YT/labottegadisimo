@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom';
 import { auth, db } from '@/lib/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { collection, getDocs, query, where } from 'firebase/firestore';
+import BackToTop from "@/components/BackToTop";
 
 import Navbar from './Navbar';
 import Footer from './Footer';
@@ -44,6 +45,7 @@ export default function AppLayout() {
         <Outlet context={{ refreshCart: () => loadCart(user) }} />
       </main>
       <Footer />
+      <BackToTop />
     </div>
   );
 }
