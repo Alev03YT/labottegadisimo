@@ -24,6 +24,7 @@ export default function Cart() {
   const [showCheckout, setShowCheckout] = useState(false);
   const [placingOrder, setPlacingOrder] = useState(false);
   const [paymentMethods, setPaymentMethods] = useState([]);
+  const [shippingMethods, setShippingMethods] = useState([]);
 
   const [form, setForm] = useState({
     name: "",
