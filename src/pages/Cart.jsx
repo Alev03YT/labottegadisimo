@@ -49,12 +49,7 @@ export default function Cart() {
       email: currentUser.email || "",
       name: currentUser.displayName || "",
     }));
-    const loadPaymentMethods = async () => {
-  const snap = await getDocs(collection(db, "paymentMethods"));
-  const data = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-  setPaymentMethods(data);
-};
-
+    
     const q = query(
       collection(db, "cartItems"),
       where("userId", "==", currentUser.uid)
@@ -64,6 +59,12 @@ export default function Cart() {
     setCartItems(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
     setIsLoading(false);
   };
+
+  const loadPaymentMethods = async () => {
+  const snap = await getDocs(collection(db, "paymentMethods"));
+  const data = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+  setPaymentMethods(data);
+};
 
   useEffect(() => {
     loadPaymentMethods();
