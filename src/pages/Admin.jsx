@@ -68,8 +68,12 @@ export default function Admin() {
   });
 
   const [paymentForm, setPaymentForm] = useState({
-    name: "",
-  });
+  name: "",
+  details: "",
+  notes: "",
+});
+
+const [paymentImage, setPaymentImage] = useState(null);
 
   useEffect(() => {
     loadAll();
@@ -406,15 +410,37 @@ const moveColor = async (color, direction) => {
   };
 
   const addPayment = async () => {
-    if (!paymentForm.name) return;
+  if (!paymentForm.name) {
+    alert("Inserisci il nome del metodo pagamento.");
+    return;
+  }
 
-    await addDoc(collection(db, "paymentMethods"), {
-      name: paymentForm.name,
-    });
+  let imageUrl = "";
 
-    setPaymentForm({ name: "" });
-    await loadPayments();
-  };
+  if (paymentImage) {
+    imageUrl = await resizeImage(paymentImage, 600, 0.75);
+  }
+
+  await addDoc(collection(db, "paymentMethods"), {
+    name: paymentForm.name,
+    details: paymentForm.details,
+    notes: paymentForm.notes,
+    image: imageUrl,
+    createdAt: serverTimestamp(),
+  });
+
+  setPaymentForm({
+    name: "",
+    details: "",
+    notes: "",
+  });
+
+  setPaymentImage(null);
+
+  await loadPayments();
+
+  alert("Metodo pagamento salvato.");
+};
 
   const deletePayment = async (id) => {
     await deleteDoc(doc(db, "paymentMethods", id));
@@ -817,20 +843,96 @@ const moveColor = async (color, direction) => {
               </div>
 
               <div>
-                <h3 className="font-semibold mb-2">Pagamenti</h3>
+  <h3 className="font-semibold mb-2">Pagamenti</h3>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
-                  <input className="border p-2 rounded" placeholder="Metodo pagamento" value={paymentForm.name} onChange={(e) => setPaymentForm({ name: e.target.value })} />
-                  <button onClick={addPayment} className="bg-black text-white rounded-xl">Aggiungi</button>
-                </div>
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+    <input
+      className="border p-2 rounded"
+      placeholder="Metodo pagamento es. Bonifico"
+      value={paymentForm.name}
+      onChange={(e) =>
+        setPaymentForm({ ...paymentForm, name: e.target.value })
+      }
+    />
 
-                {payments.map((p) => (
-                  <div key={p.id} className="flex justify-between border-b py-2">
-                    <span>{p.name}</span>
-                    <button onClick={() => deletePayment(p.id)} className="text-red-600">Elimina</button>
-                  </div>
-                ))}
-              </div>
+    <textarea
+      className="border p-2 rounded"
+      placeholder="Dati pagamento es. IBAN, intestatario, banca"
+      value={paymentForm.details}
+      onChange={(e) =>
+        setPaymentForm({ ...paymentForm, details: e.target.value })
+      }
+    />
+
+    <textarea
+      className="border p-2 rounded"
+      placeholder="Note es. Inserire numero ordine nella causale"
+      value={paymentForm.notes}
+      onChange={(e) =>
+        setPaymentForm({ ...paymentForm, notes: e.target.value })
+      }
+    />
+
+    <label className="border p-2 rounded cursor-pointer text-sm bg-white">
+      {paymentImage ? paymentImage.name : "Scegli foto/logo pagamento"}
+      <input
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={(e) => setPaymentImage(e.target.files?.[0] || null)}
+      />
+    </label>
+
+    <button
+      onClick={addPayment}
+      className="bg-black text-white rounded-xl py-2"
+    >
+      Aggiungi pagamento
+    </button>
+  </div>
+
+  <div className="space-y-3">
+    {payments.map((p) => (
+      <div
+        key={p.id}
+        className="border rounded-xl p-3 flex gap-3 items-start justify-between"
+      >
+        <div className="flex gap-3 items-start">
+          {p.image && (
+            <img
+              src={p.image}
+              alt={p.name}
+              className="w-14 h-14 object-cover rounded-lg border"
+            />
+          )}
+
+          <div>
+            <p className="font-semibold">{p.name}</p>
+
+            {p.details && (
+              <p className="text-sm text-muted-foreground whitespace-pre-line">
+                {p.details}
+              </p>
+            )}
+
+            {p.notes && (
+              <p className="text-xs text-muted-foreground mt-1 whitespace-pre-line">
+                {p.notes}
+              </p>
+            )}
+          </div>
+        </div>
+
+        <button
+          onClick={() => deletePayment(p.id)}
+          className="text-red-600 text-sm"
+        >
+          Elimina
+        </button>
+      </div>
+    ))}
+  </div>
+</div>
             </section>
           )}
         </main>
