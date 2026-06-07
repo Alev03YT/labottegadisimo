@@ -5,6 +5,7 @@ import { HashRouter as Router, Route, Routes, Navigate } from 'react-router-dom'
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
+import OrderConfirmed from "./pages/OrderConfirmed";
 
 import AppLayout from './components/layout/AppLayout';
 import Home from './pages/Home';
@@ -51,6 +52,7 @@ const AuthenticatedApp = () => {
         <Route path="/ProductDetail/:id" element={<ProductDetail />} />
         <Route path="/Cart" element={<Cart />} />
         <Route path="/Orders" element={<Orders />} />
+        <Route path="/ordine-confermato" element={<OrderConfirmed />} />
         <Route path="/Admin" element={<Admin />} />
         <Route path="/Shop" element={<Shop />} />
         <Route path="/Contacts" element={<Contacts />} />
