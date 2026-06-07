@@ -149,6 +149,22 @@ paymentNotes: selectedPayment?.notes || "",
       for (const item of cartItems) {
         await deleteDoc(doc(db, "cartItems", item.id));
       }
+      await fetch("https://formspree.io/f/mwvjlqdb", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+  },
+  body: JSON.stringify({
+    orderNumber,
+    customer: `${form.name} ${form.surname}`,
+    email: form.email,
+    phone: form.phone,
+    address: form.address,
+    payment: selectedPayment?.name || form.paymentMethod,
+    total: total,
+  }),
+});
 
       setCartItems([]);
       setShowCheckout(false);
