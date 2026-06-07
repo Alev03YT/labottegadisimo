@@ -93,12 +93,37 @@ export default function Contacts() {
       setSending(true);
 
       await addDoc(collection(db, "contactRequests"), {
-        ...form,
-        createdAt: serverTimestamp(),
-        status: "Nuova",
-      });
+  ...form,
+  createdAt: serverTimestamp(),
+  status: "Nuova",
+});
 
-      alert("Richiesta inviata correttamente!");
+await fetch("https://formspree.io/f/xzdqevqb", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+  },
+  body: JSON.stringify({
+    tipo_richiesta: form.requestType,
+    articolo: form.articleName,
+    nome: form.name,
+    email: form.email,
+    telefono: form.phone,
+    tipo_misura: form.measureType,
+    misure: form.measureCm,
+    colore_materiale: form.threadColor,
+    materiale: form.material,
+    taglia: form.size,
+    tipo_pelle: form.leatherType,
+    colore_pelle: form.leatherColor,
+    colore_minuteria: form.hardwareType,
+    messaggio: form.message,
+    file: form.fileName,
+  }),
+});
+
+alert("Richiesta inviata correttamente!");
 
       setForm({
         ...EMPTY,
