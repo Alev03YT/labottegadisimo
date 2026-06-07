@@ -169,7 +169,7 @@ paymentNotes: selectedPayment?.notes || "",
       setCartItems([]);
       setShowCheckout(false);
 
-      window.location.href = `#/ordine-confermato?order=${orderNumber}`;
+      window.location.href = `#/ordine-confermato?order=${orderNumber}&payment=${form.paymentMethod}`;
     } catch (err) {
       console.error(err);
       alert("Errore durante la creazione dell'ordine.");
