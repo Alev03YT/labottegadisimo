@@ -289,6 +289,19 @@ if (product.available && !product.price) {
     await deleteDoc(doc(db, "products", id));
     await loadProducts();
   };
+ const deleteOrder = async (id) => {
+  if (!window.confirm("Vuoi eliminare questo ordine?")) return;
+
+  await deleteDoc(doc(db, "orders", id));
+  await loadOrders();
+};
+
+const deleteRequest = async (id) => {
+  if (!window.confirm("Vuoi eliminare questa richiesta?")) return;
+
+  await deleteDoc(doc(db, "contactRequests", id));
+  await loadRequests();
+}; 
 const toggleAvailability = async (product) => {
   await updateDoc(doc(db, "products", product.id), {
     available: !product.available,
@@ -791,6 +804,12 @@ const moveColor = async (color, direction) => {
                     >
                       {orderStatuses.map((s) => <option key={s}>{s}</option>)}
                     </select>
+                    <button
+  onClick={() => deleteOrder(o.id)}
+  className="block mt-3 text-red-600 text-sm"
+>
+  Elimina ordine
+</button>
                   </div>
                 ))}
               </div>
@@ -815,6 +834,12 @@ const moveColor = async (color, direction) => {
                     <p><b>Taglia:</b> {r.size}</p>
                     <p><b>Misura:</b> {r.measureCm}</p>
                     <p><b>Messaggio:</b> {r.message}</p>
+                    <button
+  onClick={() => deleteRequest(r.id)}
+  className="mt-3 text-red-600 text-sm"
+>
+  Elimina richiesta
+</button>
                   </div>
                 ))}
               </div>
