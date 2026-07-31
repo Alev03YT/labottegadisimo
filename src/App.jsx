@@ -14,6 +14,7 @@ import ProductDetail from './pages/ProductDetail';
 import Cart from './pages/Cart';
 import Orders from './pages/Orders';
 import Admin from './pages/Admin';
+import RecoverProducts from './pages/RecoverProducts';
 import Shop from './pages/Shop';
 import Contacts from './pages/Contacts';
 import PrivacyPolicy from './pages/PrivacyPolicy';
@@ -54,6 +55,7 @@ const AuthenticatedApp = () => {
         <Route path="/Orders" element={<Orders />} />
         <Route path="/ordine-confermato" element={<OrderConfirmed />} />
         <Route path="/Admin" element={<Admin />} />
+        <Route path="/RecoverProducts" element={<RecoverProducts />} />
         <Route path="/Shop" element={<Shop />} />
         <Route path="/Contacts" element={<Contacts />} />
         <Route path="/PrivacyPolicy" element={<PrivacyPolicy />} />
@@ -72,9 +74,9 @@ function App() {
     <AuthProvider>
       <QueryClientProvider client={queryClientInstance}>
         <Router>
-  <ScrollToTop />
-  <AuthenticatedApp />
-</Router>
+          <ScrollToTop />
+          <AuthenticatedApp />
+        </Router>
         <Toaster />
       </QueryClientProvider>
     </AuthProvider>
