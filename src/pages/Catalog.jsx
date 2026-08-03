@@ -85,10 +85,24 @@ export default function Catalog() {
     p.available === true || p.available === "true";
 
   if (isAvailable) return false;
-      const categoryMatch =
-        activeCategory === 'all' ||
-        p.category === activeCategory ||
-        CATEGORY_LABELS[p.category] === activeCategory;
+      const categoryAliases = {
+  Borsa: "borse",
+  Amigurumi: "amigurumi",
+  Accessori: "accessori",
+  Gioielli: "gioielli",
+  Ricamo: "ricamo",
+  "Abbigliamento donna": "abbigliamento_donna",
+  "Abbigliamento uomo": "abbigliamento_uomo",
+  "Abbigliamento bambino": "abbigliamento_bambino",
+  "Schema digitale": "schemi_digitali",
+};
+
+const normalizedCategory =
+  categoryAliases[p.category] || p.category?.toLowerCase();
+
+const categoryMatch =
+  activeCategory === "all" ||
+  normalizedCategory === activeCategory;
 
       const searchMatch =
         !searchQuery ||
